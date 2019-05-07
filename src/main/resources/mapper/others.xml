@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.fanglin.mapper.OthersMapper">
+  <resultMap type="systemModuleEntity" id="parentModuleEntities">
+    <id column="module_id" property="moduleId"/>
+    <result column="module_name" property="moduleName"/>
+    <result column="module_url" property="moduleUrl"/>
+    <result column="parent_id" property="parentId"/>
+    <result column="sort" property="sort"/>
+    <result column="create_time" property="createTime"/>
+    <association property="systemModules" resultMap="childModuleEntities"/>
+  </resultMap>
+  <resultMap type="systemModuleEntity" id="childModuleEntitys">
+    <id column="module_id1" property="moduleId"/>
+    <result column="module_name1" property="moduleName"/>
+    <result column="module_url1" property="moduleUrl"/>
+    <result column="parent_id1" property="parentId"/>
+    <result column="sort1" property="sort"/>
+    <result column="create_time1" property="createTime"/>
+  </resultMap>
+
+  <select id="getSystemModuleTree" parameterType="int" resultMap="parentModuleEntities">
+    SELECT
+    a.module_id,
+    a.module_name,
+    a.module_url,
+    a.parent_id,
+    a.sort,
+    a.create_time,
+    b.module_id AS module_id1,
+    b.module_name AS module_name1,
+    b.module_url AS module_url1,
+    b.parent_id AS parent_id1,
+    b.sort AS sort1,
+    b.create_time AS create_time1
+    FROM
+    system_module AS a
+    INNER JOIN system_module AS b
+    ON a.module_id = b.parent_id
+    <if test=" accountId !=null ">
+      INNER JOIN
+      (SELECT
+      GROUP_CONCAT(module_ids) module_ids
+      FROM
+      role
+      WHERE FIND_IN_SET(
+      role_id,
+      (SELECT
+      role_ids
+      FROM
+      system_account
+      WHERE account_id = #{accountId})
+      )) AS c
+      ON FIND_IN_SET(a.module_id, c.module_ids) AND FIND_IN_SET(b.module_id, c.module_ids)
+    </if>
+    ORDER BY a.sort ASC,
+    b.sort ASC,
+    a.module_id ASC,
+    b.module_id ASC
+  </select>
+  <select id="getBannerList" parameterType="bannerEntity" resultType="bannerEntity">
+    select * from banner where 1=1
+    <if test=" bannerTitle !=null and bannerTitle !=''">
+      and banner_title like concat('%',#{bannerTitle},'%')
+    </if>
+    <if test=" bannerType !=null and bannerType !=''">
+      and banner_type=#{bannerType}
+    </if>
+    order by sort asc,banner_id asc
+  </select>
+  <select id="getAuthInfo" parameterType="string" resultType="string">
+    SELECT CONCAT(GROUP_CONCAT(DISTINCT role_value), ',', GROUP_CONCAT(DISTINCT authority_value))
+    FROM role AS a INNER JOIN authority AS b
+        ON FIND_IN_SET(a.role_id, #{roleIds}) AND a.is_disable = 0 AND FIND_IN_SET(b.authority_id, a.authority_ids) AND
+           b.is_disable = 0
+  </select>
+</mapper>
