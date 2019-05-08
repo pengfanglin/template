@@ -2,6 +2,7 @@ package com.fanglin.service;
 
 import com.fanglin.entity.others.CodeEntity;
 
+
 /**
  * @author 彭方林
  * @version 1.0
@@ -10,8 +11,10 @@ import com.fanglin.entity.others.CodeEntity;
 public interface OthersService {
     /**
      * 添加新的验证码
+     *
      * @param code
      * @return
      */
     int insertCode(CodeEntity code);
+
 }

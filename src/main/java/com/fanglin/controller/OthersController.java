@@ -24,9 +24,9 @@ import java.util.Date;
 public class OthersController {
 
 	@Autowired
-	OthersService othersServiceImpl;
+	OthersService othersService;
 	@Autowired
-	SystemService systemServiceImpl;
+	SystemService systemService;
 
 	/**
 	 * 获取微信授权
@@ -56,7 +56,6 @@ public class OthersController {
 
 	/**
 	 * 上传多个文件
-	 * @param request
 	 * @return
 	 */
 	@PostMapping("uploadFiles")
@@ -77,7 +76,7 @@ public class OthersController {
 			codeBean.setCode(code)
 				.setEffectiveTime(TimeUtils.getTimeMinuteAfter(create,10))
 				.setCreateTime(create);
-			othersServiceImpl.insertCode(codeBean);
+			othersService.insertCode(codeBean);
 			return Ajax.ok(code);
 		} else {
 			return Ajax.error("发送失败");

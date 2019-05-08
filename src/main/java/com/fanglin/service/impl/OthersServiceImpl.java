@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
+import java.util.Map;
 
 /**
  * 其他服务实现类
@@ -31,4 +32,5 @@ public class OthersServiceImpl implements OthersService {
     public int insertCode(CodeEntity code) {
         return mapperFactory.codeMapper.insertSelective(code.setCreateTime(new Date()));
     }
+
 }
