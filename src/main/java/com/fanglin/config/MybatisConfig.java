@@ -1,13 +1,12 @@
 package com.fanglin.config;
 
-import com.google.common.base.CaseFormat;
 import org.apache.ibatis.reflection.MetaObject;
 import org.apache.ibatis.reflection.wrapper.MapWrapper;
 import org.apache.ibatis.reflection.wrapper.ObjectWrapper;
 import org.apache.ibatis.reflection.wrapper.ObjectWrapperFactory;
+import org.mybatis.spring.boot.autoconfigure.ConfigurationCustomizer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import tk.mybatis.mapper.autoconfigure.ConfigurationCustomizer;
 
 import java.util.Map;
 
@@ -21,13 +20,20 @@ import java.util.Map;
 @Configuration
 public class MybatisConfig {
     /**
-     * mybatis resultType为map时下划线键值转小写驼峰形式插
+     * tkMapper resultType为map时下划线键值转小写驼峰形式插
      */
     @Bean
-    public ConfigurationCustomizer configurationCustomizer() {
+    public tk.mybatis.mapper.autoconfigure.ConfigurationCustomizer tkConfigurationCustomizer() {
         return configuration -> configuration.setObjectWrapperFactory(new MapWrapperFactory());
     }
 
+    /**
+     * tkMapper resultType为map时下划线键值转小写驼峰形式插
+     */
+    @Bean
+    public ConfigurationCustomizer mybatisConfigurationCustomizer() {
+        return configuration -> configuration.setObjectWrapperFactory(new MapWrapperFactory());
+    }
 
     class MapWrapperFactory implements ObjectWrapperFactory {
         @Override
