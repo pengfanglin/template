@@ -7,6 +7,7 @@ import com.fanglin.properties.GaoDeMapProperties;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.stereotype.Component;
 
 import java.util.HashMap;
@@ -21,6 +22,7 @@ import java.util.Map;
  **/
 @Component
 @Slf4j
+@ConditionalOnClass({HttpUtils.class,ObjectMapper.class})
 public class GaoDeUtils {
     private static ObjectMapper objectMapper;
     private static GaoDeMapProperties gaoDeMapProperties;
