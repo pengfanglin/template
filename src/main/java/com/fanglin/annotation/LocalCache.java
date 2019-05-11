@@ -4,6 +4,7 @@ import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
+import java.util.concurrent.TimeUnit;
 
 /**
  * 本地缓存
@@ -29,4 +30,9 @@ public @interface LocalCache {
      * 是否允许缓存null值，默认可以缓存空值
      */
     boolean cacheNull() default true;
+
+    /**
+     * 时间单位
+     */
+    TimeUnit unit() default TimeUnit.MILLISECONDS;
 }

@@ -32,7 +32,7 @@ public class SystemController extends BaseController {
      * @param accountId
      * @return
      */
-    @PostMapping("getSystemAccountDetail")
+    @RequestMapping("getSystemAccountDetail")
     public Ajax getSystemAccountDetail(@RequestParam("accountId") Integer accountId) {
         return Ajax.ok(systemService.getSystemAccountDetail(accountId));
     }

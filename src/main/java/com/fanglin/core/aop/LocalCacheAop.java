@@ -66,6 +66,27 @@ public class LocalCacheAop {
         if (reload) {
             Object result = point.proceed();
             if (result != null || localCache.cacheNull()) {
+                if(timeout!=-1){
+                    switch (localCache.unit()){
+                        case DAYS:
+                            timeout=timeout*24*3600*1000;
+                            break;
+                        case HOURS:
+                            timeout=timeout*3600*1000;
+                            break;
+                        case MINUTES:
+                            timeout=timeout*60*1000;
+                            break;
+                        case SECONDS:
+                            timeout=timeout*1000;
+                            break;
+                        case MILLISECONDS:
+                            break;
+                        default:
+                            throw new RuntimeException("不支持的时间单位");
+
+                    }
+                }
                 cacheData = new CacheData(result, timeout == -1 ? -1 : System.currentTimeMillis() + timeout);
                 cache.put(key, cacheData);
             }
