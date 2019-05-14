@@ -1,6 +1,5 @@
 package com.fanglin.core.token;
 
-import com.fanglin.enums.others.TokenTypeEnum;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -25,10 +24,6 @@ public class TokenInfo implements Serializable {
      * 令牌生成时间
      */
     private Date tokenTime;
-    /**
-     * 令牌类型
-     */
-    private TokenTypeEnum type;
     /**
      * 用户的主键
      */
