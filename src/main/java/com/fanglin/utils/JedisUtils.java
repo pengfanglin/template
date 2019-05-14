@@ -19,10 +19,6 @@ public class JedisUtils {
 
     private static JedisPool jedisPool;
 
-    private JedisUtils() {
-
-    }
-
     public JedisUtils(@Autowired(required = false) JedisPool jedisPool) {
         JedisUtils.jedisPool = jedisPool;
     }
