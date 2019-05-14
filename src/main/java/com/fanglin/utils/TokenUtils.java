@@ -39,7 +39,7 @@ public class TokenUtils {
         cookie.setMaxAge(60*60);
         response.addCookie(cookie);
         tokenInfo.setTokenTime(new Date());
-        JedisUtils.getJedis().set("token:" + tokenInfo.getToken(), JsonUtils.objectToJson(tokenInfo),"ex",3600);
+        JedisUtils.set("token:" + tokenInfo.getToken(), JsonUtils.objectToJson(tokenInfo),"ex",3600);
         return tokenInfo;
     }
 }
