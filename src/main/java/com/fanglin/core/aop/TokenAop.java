@@ -70,6 +70,7 @@ public class TokenAop {
                     }
                 }
             }
+            jedis.close();
         }
         //验证通过，继续执行，否则返回token验证失败
         if (pass) {

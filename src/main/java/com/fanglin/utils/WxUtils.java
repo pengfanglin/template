@@ -83,6 +83,7 @@ public class WxUtils {
                 throw new ValidateException("微信jsApiTicket获取失败:" + wx.getErrcode() + " " + wx.getErrmsg());
             }
         }
+        jedis.close();
         return jsApiTicket;
     }
 
@@ -110,6 +111,7 @@ public class WxUtils {
                 throw new ValidateException("微信jsApiTicket获取失败:" + wx.getErrcode() + " " + wx.getErrmsg());
             }
         }
+        jedis.close();
         return accessToken;
     }
 
