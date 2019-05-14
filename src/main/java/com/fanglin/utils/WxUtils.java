@@ -5,7 +5,6 @@ import com.fanglin.core.others.ValidateException;
 import com.fanglin.core.others.Wx;
 import com.fanglin.properties.WxProperties;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.NoSuchBeanDefinitionException;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.stereotype.Component;
 import redis.clients.jedis.Jedis;
@@ -28,7 +27,6 @@ import java.util.Map;
 @ConditionalOnClass(JedisPool.class)
 public class WxUtils {
     private static WxProperties wxProperties;
-    private static JedisPool jedisPool;
     private final static String JS_API_TICKET_URL = "https://api.weixin.qq.com/cgi-bin/ticket/getticket";
     private final static String ACCESS_TOKEN = "https://api.weixin.qq.com/cgi-bin/token";
     private final static String ACCESS_TOKEN_BY_CODE_URL = "https://api.weixin.qq.com/sns/oauth2/access_token";
@@ -43,31 +41,13 @@ public class WxUtils {
     }
 
     /**
-     * 静态工具类构造注入JedisPool有延时问题，有概率注入失败，所以在每次请求时判断为空时，尝试手动注入
-     */
-    private static void initJedisPool() {
-        if (jedisPool == null) {
-            synchronized (WxUtils.class) {
-                if (jedisPool == null) {
-                    try {
-                        WxUtils.jedisPool = SpringUtils.getBean(JedisPool.class);
-                    } catch (NoSuchBeanDefinitionException e) {
-                        throw new RuntimeException("jedis获取失败，请开启jedis自动配置或者手动配置该对象!");
-                    }
-                }
-            }
-        }
-    }
-
-    /**
      * 获取微信授权凭证
      *
      * @param accessToken 请求token
      * @return
      */
     public static String getJsApiTicket(String accessToken) {
-        initJedisPool();
-        Jedis jedis = jedisPool.getResource();
+        Jedis jedis = JedisUtils.getJedis();
         String jsApiTicket = jedis.get("wxJsApiTicket");
         if (OthersUtils.isEmpty(jsApiTicket)) {
             Map<String, Object> params = new HashMap<>(10);
@@ -93,8 +73,7 @@ public class WxUtils {
      * @return
      */
     public static String getAccessToken() {
-        initJedisPool();
-        Jedis jedis = jedisPool.getResource();
+        Jedis jedis = JedisUtils.getJedis();
         String accessToken = jedis.get("wxAccessToken");
         if (OthersUtils.isEmpty(accessToken)) {
             Map<String, Object> params = new HashMap<>(10);

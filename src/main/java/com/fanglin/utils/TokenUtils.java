@@ -3,10 +3,9 @@ package com.fanglin.utils;
 import com.fanglin.core.others.Assert;
 import com.fanglin.core.token.TokenInfo;
 import org.springframework.stereotype.Component;
-import redis.clients.jedis.JedisPool;
+import redis.clients.jedis.Jedis;
 
 import javax.servlet.http.Cookie;
-import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.Date;
 import java.util.UUID;
@@ -21,20 +20,13 @@ import java.util.UUID;
 @Component
 public class TokenUtils {
 
-    private static JedisPool jedisPool;
-
-    public TokenUtils(JedisPool jedisPool) {
-        TokenUtils.jedisPool = jedisPool;
-    }
-
     /**
      * 登录生成令牌
-     * @param request
      * @param response
      * @param tokenInfo
      * @return
      */
-    public static TokenInfo login(HttpServletRequest request, HttpServletResponse response, TokenInfo tokenInfo) {
+    public static TokenInfo login(HttpServletResponse response, TokenInfo tokenInfo) {
         Assert.notNull(tokenInfo.getId(),"id不能为空");
         Assert.notNull(tokenInfo.getType(),"令牌类型不能为空");
         //生成token
@@ -47,7 +39,7 @@ public class TokenUtils {
         cookie.setMaxAge(60*60);
         response.addCookie(cookie);
         tokenInfo.setTokenTime(new Date());
-        jedisPool.getResource().set("token:" + tokenInfo.getToken(), JsonUtils.objectToJson(tokenInfo),"ex",3600);
+        JedisUtils.getJedis().set("token:" + tokenInfo.getToken(), JsonUtils.objectToJson(tokenInfo),"ex",3600);
         return tokenInfo;
     }
 }
