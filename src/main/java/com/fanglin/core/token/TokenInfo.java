@@ -6,7 +6,6 @@ import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
 
 import java.io.Serializable;
-import java.util.Date;
 
 /**
  * 令牌信息
@@ -21,9 +20,9 @@ import java.util.Date;
 @AllArgsConstructor
 public class TokenInfo implements Serializable {
     /**
-     * 令牌生成时间
+     * 令牌超时时间(毫秒)
      */
-    private Date tokenTime;
+    private long timeout;
     /**
      * 用户的主键
      */
