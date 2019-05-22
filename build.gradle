@@ -1,3 +1,8 @@
+plugins {
+    id 'org.springframework.boot' version '2.1.5.RELEASE'
+    id 'io.spring.dependency-management' version '1.0.7.RELEASE'
+}
+
 group 'com.fanglin'
 version '1.0.0'
 
@@ -5,9 +10,6 @@ apply from: rootProject.projectDir.path + '/ext.gradle'
 apply plugin: 'java'
 apply plugin: 'idea'
 apply plugin: 'maven'
-apply plugin: 'io.spring.dependency-management'
-//生成可运行jar
-apply plugin: 'org.springframework.boot'
 
 tasks.withType(JavaCompile) {
     options.encoding = 'UTF-8'
@@ -22,18 +24,14 @@ repositories {
     maven {
         url 'http://maven.aliyun.com/nexus/content/groups/public/'
     }
-    maven {
-        url "https://plugins.gradle.org/m2/"
-    }
-    mavenCentral()
 }
 
 dependencies {
     compileOnly fileTree(dir: 'lib', includes: ['*jar'])
-    annotationProcessor "org.projectlombok:lombok:${lombokVersion}"
+    annotationProcessor "org.projectlombok:lombok"
 
     compileOnly(
-            "org.projectlombok:lombok:${lombokVersion}",
+            "org.projectlombok:lombok",
     )
     compileOnly("org.apache.poi:poi:${poiVersion}")
     compileOnly("org.apache.poi:poi-ooxml:${poiVersion}")
@@ -44,7 +42,7 @@ dependencies {
     compile("tk.mybatis:mapper-spring-boot-starter:${mapperVersion}")
     compile("org.mybatis.spring.boot:mybatis-spring-boot-starter:${mybatisSpringbootStarterVersion}")
     compile("com.github.pagehelper:pagehelper-spring-boot-starter:${pagehelperVersion}")
-    compile("org.apache.httpcomponents:httpclient:${httpclientVersion}")
+    compile("org.apache.httpcomponents:httpclient")
     compile("org.springframework.boot:spring-boot-configuration-processor")
     compile("redis.clients:jedis:${jedisVersion}")
     compile("org.springframework.boot:spring-boot-starter-aop")
@@ -63,26 +61,5 @@ dependencies {
     }
     compile("org.springframework.boot:spring-boot-starter-web") {
         exclude module: 'spring-boot-starter-tomcat'
-    }
-}
-
-configurations {
-
-}
-
-buildscript {
-    apply from: rootProject.projectDir.path + '/ext.gradle'
-    repositories {
-        mavenLocal()
-        maven {
-            url 'http://maven.aliyun.com/nexus/content/groups/public/'
-        }
-        maven {
-            url "https://plugins.gradle.org/m2/"
-        }
-        mavenCentral()
-    }
-    dependencies {
-        classpath("org.springframework.boot:spring-boot-gradle-plugin:${springbootVersion}")
     }
 }
