@@ -26,11 +26,6 @@ spring:
       connection-timeout: 10000
   redis:
     timeout: 1s
-    jedis:
-      pool:
-        max-idle: 100
-        min-idle: 50
-        max-active: 1000
   session:
     #spring session采用的数据源类型
     store-type: redis

@@ -38,7 +38,7 @@ dependencies {
     compileOnly("com.google.zxing:javase:${javaseVersion}")
     compileOnly("io.springfox:springfox-swagger2:${swaggerVersion}")
     compileOnly("io.springfox:springfox-swagger-ui:${swaggerVersion}")
-    
+
     compile("tk.mybatis:mapper-spring-boot-starter:${mapperVersion}")
     compile("org.mybatis.spring.boot:mybatis-spring-boot-starter:${mybatisSpringbootStarterVersion}")
     compile("com.github.pagehelper:pagehelper-spring-boot-starter:${pagehelperVersion}")
@@ -62,4 +62,6 @@ dependencies {
     compile("org.springframework.boot:spring-boot-starter-web") {
         exclude module: 'spring-boot-starter-tomcat'
     }
+    compile("org.hibernate.validator:hibernate-validator")
+    compile("org.glassfish:javax.el")
 }

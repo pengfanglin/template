@@ -10,7 +10,7 @@
     <result column="create_time" property="createTime"/>
     <association property="systemModules" resultMap="childModuleEntities"/>
   </resultMap>
-  <resultMap type="systemModuleEntity" id="childModuleEntitys">
+  <resultMap type="systemModuleEntity" id="childModuleEntities">
     <id column="module_id1" property="moduleId"/>
     <result column="module_name1" property="moduleName"/>
     <result column="module_url1" property="moduleUrl"/>

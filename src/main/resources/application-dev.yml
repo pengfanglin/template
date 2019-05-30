@@ -11,3 +11,7 @@ spring:
     port: 6379
     database: 0
     password: 123456
+common:
+  jedis: true
+jedis:
+  password: 123456

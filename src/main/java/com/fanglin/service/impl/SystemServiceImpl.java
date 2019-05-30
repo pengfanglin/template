@@ -1,5 +1,6 @@
 package com.fanglin.service.impl;
 
+import com.fanglin.annotation.RedisCache;
 import com.fanglin.core.others.Assert;
 import com.fanglin.entity.auth.RoleEntity;
 import com.fanglin.entity.others.BannerEntity;
@@ -21,6 +22,7 @@ import org.springframework.stereotype.Service;
 import tk.mybatis.mapper.entity.Example;
 
 import java.util.*;
+import java.util.concurrent.TimeUnit;
 
 /**
  * 系统服务实现类
@@ -39,7 +41,7 @@ public class SystemServiceImpl implements SystemService {
      *
      * @return
      */
-    @Cacheable(key = "'systemModuleTree'", value = "systemModuleTree")
+    @RedisCache(value = "systemModuleTree", timeout = 1, unit = TimeUnit.HOURS)
     @Override
     public List<SystemModuleEntity> getSystemModuleTree() {
         return mapperFactory.othersMapper.getSystemModuleTree(null);

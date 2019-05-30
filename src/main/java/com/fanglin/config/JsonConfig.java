@@ -1,11 +1,12 @@
 package com.fanglin.config;
 
 import com.fanglin.core.others.AjaxSerializerModifier;
-import com.fanglin.utils.LogUtils;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
@@ -13,28 +14,16 @@ import org.springframework.http.converter.json.MappingJackson2HttpMessageConvert
 import java.text.SimpleDateFormat;
 
 /**
- * 和JSON相关的配置（包含@ResponseBody序列化规则）
+ * JSON相关的配置
  *
  * @author 彭方林
  * @version 1.0
- * @date 2019/4/3 16:33
+ * @date 2019/4/2 17:54
  **/
 @Configuration
 @ConditionalOnClass(ObjectMapper.class)
+@Slf4j
 public class JsonConfig {
-    /**
-     * jackson对象声明
-     */
-    @Bean
-    public ObjectMapper objectMapper() {
-        return baseObjectMapper();
-    }
-
-    @Bean
-    AjaxSerializerModifier ajaxSerializerModifier() {
-        return new AjaxSerializerModifier();
-    }
-
     /**
      * 基本配置
      */
@@ -49,11 +38,30 @@ public class JsonConfig {
         return objectMapper;
     }
 
+    @Bean
+    AjaxSerializerModifier ajaxSerializerModifier() {
+        return new AjaxSerializerModifier();
+    }
+
+    /**
+     * jackson对象声明
+     */
+    @Bean
+    @ConditionalOnProperty(prefix = "common", name = "jackson", havingValue = "true", matchIfMissing = true)
+    @ConditionalOnClass(ObjectMapper.class)
+    public ObjectMapper objectMapper() {
+        log.info("objectMapper成功");
+        return baseObjectMapper();
+    }
+
     /**
      * jackson对象声明
      */
     @Bean("ajaxObjectMapper")
+    @ConditionalOnProperty(prefix = "common", name = "jackson", havingValue = "true", matchIfMissing = true)
+    @ConditionalOnClass(ObjectMapper.class)
     public ObjectMapper ajaxObjectMapper(AjaxSerializerModifier ajaxSerializerModifier) {
+        log.info("ajaxObjectMapper配置成功");
         ObjectMapper objectMapper = baseObjectMapper();
         // 为mapper注册一个带有SerializerModifier的Factory，针对值为null的字段进行特殊处理
         objectMapper.setSerializerFactory(objectMapper.getSerializerFactory().withSerializerModifier(ajaxSerializerModifier));
@@ -64,7 +72,9 @@ public class JsonConfig {
      * 配置springMvc的默认序列化规则，对null对象做特殊处理
      */
     @Bean
+    @ConditionalOnClass({MappingJackson2HttpMessageConverter.class})
     public MappingJackson2HttpMessageConverter mappingJacksonHttpMessageConverter(AjaxSerializerModifier ajaxSerializerModifier) {
+        log.info("mvc序列化开启成功");
         MappingJackson2HttpMessageConverter converter = new MappingJackson2HttpMessageConverter();
         //获取springMvc默认的objectMapper
         ObjectMapper objectMapper = converter.getObjectMapper();
@@ -74,6 +84,4 @@ public class JsonConfig {
         objectMapper.setSerializerFactory(objectMapper.getSerializerFactory().withSerializerModifier(ajaxSerializerModifier));
         return converter;
     }
-
-
 }
