@@ -1,6 +1,7 @@
 package com.fanglin.config;
 
 import com.fanglin.properties.JedisProperties;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
@@ -19,12 +20,14 @@ import redis.clients.jedis.JedisPoolConfig;
 @Configuration
 @ConditionalOnClass(JedisPool.class)
 @ConditionalOnProperty(prefix = "common", name = "jedis", havingValue = "true")
+@Slf4j
 public class JedisConfig {
     @Autowired
     JedisProperties jedisProperties;
 
     @Bean
     public JedisPool redisPoolFactory() {
+        log.info("jedisPool开启成功");
         return new JedisPool(jedisPoolConfig(), jedisProperties.getHost(), jedisProperties.getPort(), jedisProperties.getTimeout(), jedisProperties.getPassword(), jedisProperties.getDatabase());
     }
 

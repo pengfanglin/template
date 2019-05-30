@@ -1,5 +1,6 @@
 package com.fanglin.utils;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.stereotype.Component;
@@ -15,11 +16,13 @@ import redis.clients.jedis.JedisPool;
  **/
 @Component
 @ConditionalOnClass(JedisPool.class)
+@Slf4j
 public class JedisUtils {
 
     private static JedisPool jedisPool;
 
     public JedisUtils(@Autowired(required = false) JedisPool jedisPool) {
+        log.info("JedisUtils配置成功");
         JedisUtils.jedisPool = jedisPool;
     }
 
