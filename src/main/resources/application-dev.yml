@@ -1,17 +1,69 @@
+server:
+  undertow:
+    io-threads: 8
+    worker-threads: 128
+    buffer-size: 1024
+    direct-buffers: true
+  port: 80
 mybatis:
+  type-aliases-package: com.fanglin.entity
+  mapper-locations: classpath:mapper/*.xml
   configuration:
+    map-underscore-to-camel-case: true
     log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
 spring:
+  jmx:
+    enabled: false
+  servlet:
+    multipart:
+      max-file-size: 50MB
+      max-request-size: 50MB
   datasource:
     url: jdbc:mysql://127.0.0.1:3306/test?useSSL=false&serverTimezone=CTT&characterEncoding=UTF-8&autoReconnect=true
     username: root
     password: 123456
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    type: com.zaxxer.hikari.HikariDataSource
+    hikari:
+      minimum-idle: 1
+      maximum-pool-size: 2000
+      pool-name: hikariCP
+      connection-timeout: 10000
   redis:
     host: 127.0.0.1
     port: 6379
     database: 0
     password: 123456
+  session:
+    #spring session采用的数据源类型
+    store-type: redis
+    redis:
+      #配置session在redis里的命名空间
+      namespace: security_session
+      #配置session的保存触发方式
+      flush-mode: on_save
 common:
   jedis: true
+  #静态资源默认保存根路径
+  static-dir: /data/static/template/
 jedis:
   password: 123456
+gaode:
+  key: 4a4775afef857b08ca7e3ed2407a91ba
+push:
+  app-key: 309b096fa91403d46616e9ca
+  master-secret: 1888f0421cbcc93f63b330d3
+sms:
+  zhu-tong:
+    account: sfsfhy
+    password: jLkdrz
+wx:
+  app-id: wxd04cf729f344bdc3
+  secret: 65520fb3cf19ad99aea4747c7a77c9f8
+pay:
+  wx:
+    app-id: wx55c03ed3be05cf4b
+    mch-id: 1488013422
+    secret: 8b1ceca44580f2a88ac2605cd795a24c
+    http-client:
+      certificate-name: wx_cert.p12

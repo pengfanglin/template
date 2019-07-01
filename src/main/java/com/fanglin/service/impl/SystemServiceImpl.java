@@ -1,5 +1,6 @@
 package com.fanglin.service.impl;
 
+import com.fanglin.annotation.LocalCache;
 import com.fanglin.annotation.RedisCache;
 import com.fanglin.core.others.Assert;
 import com.fanglin.entity.auth.RoleEntity;
@@ -41,7 +42,7 @@ public class SystemServiceImpl implements SystemService {
      *
      * @return
      */
-    @RedisCache(value = "systemModuleTree", timeout = 1, unit = TimeUnit.HOURS)
+    @LocalCache(value = "systemModuleTree", timeout = 1, unit = TimeUnit.HOURS)
     @Override
     public List<SystemModuleEntity> getSystemModuleTree() {
         return mapperFactory.othersMapper.getSystemModuleTree(null);
