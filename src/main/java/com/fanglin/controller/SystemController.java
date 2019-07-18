@@ -1,5 +1,7 @@
 package com.fanglin.controller;
 
+import com.fanglin.annotation.Token;
+import com.fanglin.core.token.TokenInfo;
 import com.fanglin.entity.auth.RoleEntity;
 import com.fanglin.entity.others.BannerEntity;
 import com.fanglin.entity.system.SystemModuleEntity;
@@ -81,8 +83,11 @@ public class SystemController extends BaseController {
      */
     @PostMapping("deleteSystemAccount")
     public Ajax deleteSystemAccount(Integer accountId) {
-        systemService.deleteSystemAccount(accountId);
-        return Ajax.ok();
+        if (systemService.deleteSystemAccount(accountId) > 0) {
+            return Ajax.ok();
+        } else {
+            return Ajax.error("删除失败");
+        }
     }
 
     /**
@@ -91,7 +96,7 @@ public class SystemController extends BaseController {
      * @return
      */
     @PostMapping("getSystemModuleTree")
-    public Ajax getSystemModuleTree() {
+    public Ajax getSystemModuleTree(TokenInfo tokenInfo) {
         return Ajax.ok(systemService.getSystemModuleTree());
     }
 
@@ -185,7 +190,7 @@ public class SystemController extends BaseController {
      */
     @PostMapping("deleteRole")
     public Ajax deleteRole(@RequestParam("roleId") Integer roleId) {
-        int num=systemService.deleteRole(roleId);
+        int num = systemService.deleteRole(roleId);
         System.out.println(num);
         return Ajax.ok("删除成功");
     }
@@ -198,7 +203,7 @@ public class SystemController extends BaseController {
      */
     @PostMapping("updateRole")
     public Ajax updateRole(RoleEntity role) {
-        int num=systemService.updateRole(role);
+        int num = systemService.updateRole(role);
         System.out.println(num);
         return Ajax.ok("修改成功");
     }

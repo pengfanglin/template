@@ -40,7 +40,7 @@ public class MyExceptionHandler {
     @ResponseStatus(value = HttpStatus.FORBIDDEN)
     @ResponseBody
     public Ajax handleAccessDeniedException() {
-        return Ajax.status(false, 403, "无权限");
+        return Ajax.status(403, "无权限");
     }
 
     /**

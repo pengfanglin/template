@@ -30,6 +30,6 @@ public class MyAccessDeniedHandler implements AccessDeniedHandler {
     public void handle(HttpServletRequest request, HttpServletResponse response, AccessDeniedException accessDeniedException) throws IOException {
         response.setContentType("application/json;charset=UTF-8");
         response.setStatus(HttpServletResponse.SC_FORBIDDEN);
-        objectMapper.writeValue(response.getOutputStream(), Ajax.status(false, 403, "无权限"));
+        objectMapper.writeValue(response.getOutputStream(), Ajax.status(403, "无权限"));
     }
 }

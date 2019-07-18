@@ -31,6 +31,6 @@ public class MyAuthExceptionEntryPoint implements AuthenticationEntryPoint {
         response.setContentType("application/json;charset=UTF-8");
         response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
         System.out.println(authException.getClass().toString() + " " + authException.getMessage());
-        objectMapper.writeValue(response.getOutputStream(), Ajax.status(false, 401, "未授权，请登录"));
+        objectMapper.writeValue(response.getOutputStream(), Ajax.status( 401, "未授权，请登录"));
     }
 }
