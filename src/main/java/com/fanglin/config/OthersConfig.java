@@ -8,9 +8,10 @@ import org.springframework.web.filter.CorsFilter;
 
 /**
  * 其他全局对象的声明配置
+ *
  * @author 彭方林
- * @date 2019/4/3 16:36
  * @version 1.0
+ * @date 2019/4/3 16:36
  **/
 @Configuration
 public class OthersConfig {

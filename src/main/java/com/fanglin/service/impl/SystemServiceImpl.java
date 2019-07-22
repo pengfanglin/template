@@ -3,6 +3,7 @@ package com.fanglin.service.impl;
 import com.fanglin.annotation.LocalCache;
 import com.fanglin.annotation.RedisCacheRemove;
 import com.fanglin.core.others.Assert;
+import com.fanglin.core.others.BusinessException;
 import com.fanglin.entity.system.RoleEntity;
 import com.fanglin.entity.system.AccountEntity;
 import com.fanglin.entity.system.ModuleEntity;
@@ -46,6 +47,9 @@ public class SystemServiceImpl implements SystemService {
 
     @Override
     public List<ModuleTreeModel> getLeftMenuTree(Integer accountId) {
+        if (Integer.valueOf(OthersUtils.createRandom(1)) > 5) {
+            throw new IndexOutOfBoundsException();
+        }
         return mapperFactory.othersMapper.getSystemModuleTree(accountId);
     }
 

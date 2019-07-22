@@ -1,6 +1,7 @@
 package com.fanglin.core.filter;
 
 import com.fanglin.utils.JsonUtils;
+import com.fanglin.utils.OthersUtils;
 import lombok.extern.slf4j.Slf4j;
 
 import javax.servlet.*;
@@ -24,19 +25,7 @@ public class RequestLogFilter implements Filter {
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws ServletException, IOException {
         HttpServletRequest req = (HttpServletRequest) request;
-        Map<String, Object> map = new HashMap<>(10);
-        map.put("URL", req.getRequestURL());
-        map.put("Method", req.getMethod());
-        map.put("Protocol", req.getProtocol());
-        List<Map<String, String>> parameterList = new ArrayList<>();
-        Map<String, String> parameterMaps = new HashMap<>(10);
-        for (Enumeration<String> names = req.getParameterNames(); names.hasMoreElements(); ) {
-            String name = names.nextElement();
-            parameterMaps.put(name, req.getParameter(name));
-        }
-        parameterList.add(parameterMaps);
-        map.put("parameters", parameterList);
-        log.info("请求参数:\n" + JsonUtils.objectToJson(map));
+        log.info("请求参数:\n" + JsonUtils.objectToJson(OthersUtils.readRequestParams(req)));
         chain.doFilter(request, response);
     }
 

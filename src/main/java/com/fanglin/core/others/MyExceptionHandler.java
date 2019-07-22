@@ -1,5 +1,7 @@
 package com.fanglin.core.others;
 
+import com.fanglin.utils.JsonUtils;
+import com.fanglin.utils.OthersUtils;
 import com.mysql.cj.jdbc.exceptions.MysqlDataTruncation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -12,6 +14,13 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
+import org.springframework.web.util.ContentCachingRequestWrapper;
+
+import javax.servlet.ServletRequest;
+import javax.servlet.http.HttpServletRequest;
+import java.net.URLDecoder;
+import java.nio.charset.Charset;
+import java.util.*;
 
 /**
  * 全局异常捕获
@@ -114,16 +123,9 @@ public class MyExceptionHandler {
      */
     @ExceptionHandler
     @ResponseBody
-    public Ajax handleException(Exception e) {
-        log.warn(e.getMessage());
-        //提取错误信息
-        String error;
-        if (e.getCause() != null) {
-            error = e.getCause().getMessage() == null ? "空指针异常" : e.getCause().getMessage();
-        } else {
-            error = e.getMessage() == null ? "空指针异常" : e.getMessage();
-        }
-        return Ajax.error(error);
+    public Ajax handleException(Exception e, HttpServletRequest request) {
+        log.info("异常原因:{},请求参数:\n{}", e.getMessage(), JsonUtils.objectToJson(OthersUtils.readRequestParams(request)));
+        return Ajax.error("服务器错误");
     }
 
     @ExceptionHandler
