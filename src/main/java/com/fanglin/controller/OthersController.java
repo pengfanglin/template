@@ -3,9 +3,14 @@ package com.fanglin.controller;
 import com.fanglin.core.others.Ajax;
 import com.fanglin.entity.others.CodeEntity;
 import com.fanglin.enums.pay.TestEnum;
+import com.fanglin.model.others.SendCodeModel;
 import com.fanglin.service.OthersService;
 import com.fanglin.service.SystemService;
 import com.fanglin.utils.*;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -24,6 +29,7 @@ import java.util.Date;
  **/
 @RestController
 @RequestMapping("/others/")
+@Api(value = "/common/", tags = {"app", "基本服务"})
 public class OthersController {
 
     @Autowired
@@ -31,62 +37,23 @@ public class OthersController {
     @Autowired
     SystemService systemService;
 
-    /**
-     * 获取微信授权
-     *
-     * @param url
-     * @return
-     */
-    @PostMapping("getWxAuthorization")
-    public Ajax getWXAuthorization(String url) {
-        return Ajax.ok(WxUtils.getWXAuthorization(url));
-    }
-
-    /**
-     * 获取html页面内容
-     *
-     * @param url
-     * @return
-     */
-    @PostMapping("getHtmlContent")
-    public Ajax getHtmlContent(String url) {
-        String desc = OthersUtils.readHtml(url);
-        int start = desc.indexOf("<content>");
-        int end = desc.indexOf("</content>");
-        if (start > 0 && end > 0) {
-            desc = desc.substring(start + 9, end);
-        }
-        return Ajax.ok(desc);
-    }
-
-    /**
-     * 上传多个文件
-     *
-     * @return
-     */
+    @ApiOperation("上传多个文件")
+    @ApiImplicitParams({
+        @ApiImplicitParam(name = "files", value = "图片文件", required = true),
+        @ApiImplicitParam(name = "small", value = "是否生成缩略图", defaultValue = "false"),
+        @ApiImplicitParam(name = "path", value = "保存路径", defaultValue = "/files/others")
+    })
     @PostMapping("uploadFiles")
     public Ajax uploadFiles(@RequestParam("file") MultipartFile[] files, Boolean small, String path) {
         return Ajax.ok(OthersUtils.uploadFiles(files, small, path));
     }
 
-    /**
-     * 发送验证码
-     *
-     * @param codeBean
-     * @return
-     */
+    @ApiOperation("发送验证码")
+    @ApiImplicitParams({
+        @ApiImplicitParam(name = "mobile", value = "手机号", required = true),
+    })
     @PostMapping("sendCode")
-    public Ajax sendCode(CodeEntity codeBean) {
-        String code = OthersUtils.createRandom(4);
-        if (SmsUtils.zhuTong(codeBean.getMobile(), code)) {
-            Date create = new Date();
-            codeBean.setCode(code)
-                .setEffectiveTime(TimeUtils.getTimeMinuteAfter(create, 10))
-                .setCreateTime(create);
-            othersService.insertCode(codeBean);
-            return Ajax.ok(code);
-        } else {
-            return Ajax.error("发送失败");
-        }
+    public Ajax sendCode(@RequestParam String mobile) {
+        return othersService.sendCode(mobile);
     }
 }

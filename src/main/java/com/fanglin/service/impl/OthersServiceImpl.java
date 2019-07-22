@@ -1,13 +1,18 @@
 package com.fanglin.service.impl;
 
-import com.fanglin.entity.others.CodeEntity;
+import com.fanglin.core.others.Ajax;
+import com.fanglin.core.others.ValidateException;
 import com.fanglin.mapper.MapperFactory;
+import com.fanglin.model.others.SendCodeModel;
 import com.fanglin.service.OthersService;
+import com.fanglin.utils.OthersUtils;
+import com.fanglin.utils.RegexUtils;
+import com.fanglin.utils.SmsUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import redis.clients.jedis.Jedis;
+import redis.clients.jedis.JedisPool;
 
-import java.util.Date;
-import java.util.Map;
 
 /**
  * 其他服务实现类
@@ -21,16 +26,32 @@ public class OthersServiceImpl implements OthersService {
 
     @Autowired
     MapperFactory mapperFactory;
+    @Autowired
+    JedisPool jedisPool;
 
     /**
-     * 添加新的验证码
+     * 发送验证码
      *
-     * @param code
+     * @param mobile 手机号
      * @return
      */
     @Override
-    public int insertCode(CodeEntity code) {
-        return mapperFactory.codeMapper.insertSelective(code.setCreateTime(new Date()));
+    public Ajax sendCode(String mobile) {
+        if (RegexUtils.checkMobile(mobile)) {
+            return Ajax.error("手机号不合法");
+        }
+        try (Jedis jedis = jedisPool.getResource()) {
+            while (true) {
+                String code = OthersUtils.createRandom(4);
+                if (jedis.get(mobile) == null) {
+                    SmsUtils.zhuTong(mobile, code);
+                    jedis.set(String.format("code:%s_%s", mobile, code), "", "ex", 60);
+                    return Ajax.ok(code);
+                }
+            }
+        } catch (Exception e) {
+            throw new ValidateException(e.getMessage());
+        }
     }
 
 }

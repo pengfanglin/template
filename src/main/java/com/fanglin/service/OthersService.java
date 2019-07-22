@@ -1,6 +1,6 @@
 package com.fanglin.service;
 
-import com.fanglin.entity.others.CodeEntity;
+import com.fanglin.core.others.Ajax;
 
 
 /**
@@ -10,11 +10,11 @@ import com.fanglin.entity.others.CodeEntity;
  **/
 public interface OthersService {
     /**
-     * 添加新的验证码
+     * 发送验证码
      *
-     * @param code
+     * @param mobile 手机号
      * @return
      */
-    int insertCode(CodeEntity code);
+    Ajax sendCode(String mobile);
 
 }

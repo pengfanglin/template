@@ -245,7 +245,7 @@ public class OthersUtils {
     public static String setDefaultPath(String path) {
         String finalPath;
         if (OthersUtils.isEmpty(path)) {
-            finalPath = "/images/others/";
+            finalPath = "/files/others/";
         } else {
             if (path.contains("%")) {
                 try {
