@@ -1,6 +1,6 @@
 package com.fanglin.service.impl;
 
-import com.fanglin.entity.system.SystemAccountEntity;
+import com.fanglin.entity.system.AccountEntity;
 import com.fanglin.mapper.MapperFactory;
 import com.fanglin.security.Token;
 import com.fanglin.utils.OthersUtils;
@@ -28,7 +28,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String username) {
-        SystemAccountEntity systemAccount = mapperFactory.systemAccountMapper.selectOne(new SystemAccountEntity().setUsername(username));
+        AccountEntity systemAccount = mapperFactory.systemAccountMapper.selectOne(new AccountEntity().setUsername(username));
         if (systemAccount == null) {
             throw new UsernameNotFoundException("账号不存在");
         }

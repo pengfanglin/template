@@ -1,22 +1,26 @@
 package com.fanglin.controller;
 
-import com.fanglin.annotation.Token;
 import com.fanglin.core.token.TokenInfo;
-import com.fanglin.entity.auth.RoleEntity;
+import com.fanglin.entity.system.RoleEntity;
 import com.fanglin.entity.others.BannerEntity;
-import com.fanglin.entity.system.SystemModuleEntity;
+import com.fanglin.entity.system.ModuleEntity;
 import com.fanglin.core.others.Ajax;
 import com.fanglin.entity.others.HtmlStyleEntity;
-import com.fanglin.entity.system.SystemAccountEntity;
+import com.fanglin.entity.system.AccountEntity;
 import com.fanglin.entity.system.SystemHtmlEntity;
 import com.fanglin.core.page.Page;
+import com.fanglin.model.system.AccountModel;
 import com.fanglin.service.SystemService;
 import com.fanglin.utils.OthersUtils;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 /**
- * 系统权限控制器
+ * 系统
  *
  * @author 彭方林
  * @version 1.0
@@ -24,41 +28,33 @@ import org.springframework.web.bind.annotation.*;
  **/
 @RestController
 @RequestMapping("/system/")
+@Api(value = "/system/", tags = {"系统"})
 public class SystemController extends BaseController {
     @Autowired
     SystemService systemService;
 
-    /**
-     * 系统账号详情
-     *
-     * @param accountId
-     * @return
-     */
-    @RequestMapping("getSystemAccountDetail")
-    public Ajax getSystemAccountDetail(@RequestParam("accountId") Integer accountId) {
-        return Ajax.ok(systemService.getSystemAccountDetail(accountId));
+    @ApiOperation("系统账号详情")
+    @ApiImplicitParams({
+        @ApiImplicitParam(name = "id", value = "账号id", required = true)
+    })
+    @PostMapping("getSystemAccountDetail")
+    public Ajax getSystemAccountDetail(@RequestParam Integer id) {
+        return Ajax.ok(systemService.getSystemAccountDetail(id));
     }
 
-    /**
-     * 系统账号列表
-     *
-     * @param systemAccount
-     * @param page
-     * @return
-     */
+    @ApiOperation("系统账号列表")
+    @ApiImplicitParams({
+        @ApiImplicitParam(name = "username", value = "用户名"),
+        @ApiImplicitParam(name = "isDisable", value = "是否禁用")
+    })
     @PostMapping("getSystemAccountList")
-    public Ajax getSystemAccountList(SystemAccountEntity systemAccount, Page page) {
-        return Ajax.ok(systemService.getSystemAccountList(systemAccount, page));
+    public Ajax getSystemAccountList(String username, String isDisable, Page page) {
+        return Ajax.ok(systemService.getSystemAccountList(username, isDisable, page));
     }
 
-    /**
-     * 修改系统账号
-     *
-     * @param systemAccount
-     * @return
-     */
+    @ApiOperation("修改系统账号")
     @PostMapping("updateSystemAccount")
-    public Ajax updateSystemAccount(SystemAccountEntity systemAccount) {
+    public Ajax updateSystemAccount(AccountModel systemAccount) {
         systemService.updateSystemAccount(systemAccount);
         return Ajax.ok();
     }
@@ -70,7 +66,7 @@ public class SystemController extends BaseController {
      * @return
      */
     @PostMapping("insertSystemAccount")
-    public Ajax insertSystemAccount(SystemAccountEntity systemAccount) {
+    public Ajax insertSystemAccount(AccountEntity systemAccount) {
         systemService.insertSystemAccount(systemAccount);
         return Ajax.ok();
     }
@@ -119,7 +115,7 @@ public class SystemController extends BaseController {
      * @return
      */
     @PostMapping("getSystemModuleList")
-    public Ajax getSystemModuleList(Page page, SystemModuleEntity systemModule) {
+    public Ajax getSystemModuleList(Page page, ModuleEntity systemModule) {
         return Ajax.ok(systemService.getSystemModuleList(systemModule, page));
     }
 
@@ -130,7 +126,7 @@ public class SystemController extends BaseController {
      * @return
      */
     @PostMapping("insertSystemModule")
-    public Ajax insertSystemModule(SystemModuleEntity systemModule) {
+    public Ajax insertSystemModule(ModuleEntity systemModule) {
         systemService.insertSystemModule(systemModule);
         return Ajax.ok("添加成功");
     }
@@ -154,7 +150,7 @@ public class SystemController extends BaseController {
      * @return
      */
     @PostMapping("updateSystemModule")
-    public Ajax updateSystemModule(SystemModuleEntity systemModule) {
+    public Ajax updateSystemModule(ModuleEntity systemModule) {
         systemService.updateSystemModule(systemModule);
         return Ajax.ok("修改成功");
     }

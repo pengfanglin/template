@@ -1,16 +1,17 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.fanglin.mapper.OthersMapper">
-  <resultMap type="systemModuleEntity" id="parentModuleEntities">
+
+  <resultMap type="moduleTreeModel" id="parentModules">
     <id column="module_id" property="moduleId"/>
     <result column="module_name" property="moduleName"/>
     <result column="module_url" property="moduleUrl"/>
     <result column="parent_id" property="parentId"/>
     <result column="sort" property="sort"/>
     <result column="create_time" property="createTime"/>
-    <association property="systemModules" resultMap="childModuleEntities"/>
+    <association property="childModules" resultMap="childModules"/>
   </resultMap>
-  <resultMap type="systemModuleEntity" id="childModuleEntities">
+  <resultMap type="moduleTreeModel" id="childModules">
     <id column="module_id1" property="moduleId"/>
     <result column="module_name1" property="moduleName"/>
     <result column="module_url1" property="moduleUrl"/>
@@ -19,7 +20,7 @@
     <result column="create_time1" property="createTime"/>
   </resultMap>
 
-  <select id="getSystemModuleTree" parameterType="int" resultMap="parentModuleEntities">
+  <select id="getSystemModuleTree" parameterType="int" resultMap="parentModules">
     SELECT
     a.module_id,
     a.module_name,
@@ -58,20 +59,17 @@
     a.module_id ASC,
     b.module_id ASC
   </select>
-  <select id="getBannerList" parameterType="bannerEntity" resultType="bannerEntity">
-    select * from banner where 1=1
-    <if test=" bannerTitle !=null and bannerTitle !=''">
-      and banner_title like concat('%',#{bannerTitle},'%')
-    </if>
-    <if test=" bannerType !=null and bannerType !=''">
-      and banner_type=#{bannerType}
-    </if>
-    order by sort asc,banner_id asc
-  </select>
-  <select id="getAuthInfo" parameterType="string" resultType="string">
-    SELECT CONCAT(GROUP_CONCAT(DISTINCT role_value), ',', GROUP_CONCAT(DISTINCT authority_value))
-    FROM role AS a INNER JOIN authority AS b
-        ON FIND_IN_SET(a.role_id, #{roleIds}) AND a.is_disable = 0 AND FIND_IN_SET(b.authority_id, a.authority_ids) AND
-           b.is_disable = 0
+
+  <select id="getSystemAccountList" resultType="accountModel">
+    select * from system_account
+    <where>
+      <if test=" username != null and username !=''">
+        and username like concat('%',#{username},'%'})
+      </if>
+      <if test=" isDisable != null and isDisable !=''">
+        and is_disable=#{isDisable}
+      </if>
+    </where>
+    order by account_id desc
   </select>
 </mapper>

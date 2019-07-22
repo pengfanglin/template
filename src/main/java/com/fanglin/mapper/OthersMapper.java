@@ -1,13 +1,10 @@
 package com.fanglin.mapper;
 
 
-import com.fanglin.entity.others.BannerEntity;
-import com.fanglin.entity.system.SystemModuleEntity;
-import com.fanglin.core.page.Page;
+import com.fanglin.model.system.ModuleTreeModel;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
-import java.util.Map;
 
 /**
  * 其他Mapper
@@ -23,22 +20,5 @@ public interface OthersMapper {
      * @param accountId 账号id
      * @return
      */
-    List<SystemModuleEntity> getSystemModuleTree(@Param("accountId") Integer accountId);
-
-    /**
-     * 搜索banner列表
-     *
-     * @param banner
-     * @param page
-     * @return
-     */
-    List<BannerEntity> getBannerList(BannerEntity banner, Page page);
-
-    /**
-     * 根据roleIds查询角色和权限列表
-     *
-     * @param roleIds 角色id组合
-     * @return
-     */
-    String getAuthInfo(String roleIds);
+    List<ModuleTreeModel> getSystemModuleTree(@Param("accountId") Integer accountId);
 }

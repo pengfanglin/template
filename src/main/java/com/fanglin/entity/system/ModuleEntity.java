@@ -1,46 +1,51 @@
-package com.fanglin.entity.auth;
+package com.fanglin.entity.system;
 
 import lombok.Data;
-import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
 import tk.mybatis.mapper.annotation.KeySql;
-import tk.mybatis.mapper.code.IdentityDialect;
 
 import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 import java.io.Serializable;
 import java.util.Date;
-import java.util.Set;
+import java.util.List;
 
 /**
- * 角色实体类
+ * 系统模块实体类
  *
  * @author 彭方林
  * @version 1.0
- * @date 2019/4/3 16:38
+ * @date 2019/4/3 16:43
  **/
 @Data
 @Accessors(chain = true)
-@EqualsAndHashCode(callSuper = false)
-@Table(name = "role")
-public class RoleEntity implements Serializable {
-    @Id
-    @KeySql(useGeneratedKeys = true)
+@Table(name = "system_module")
+public class ModuleEntity implements Cloneable, Serializable {
     /**
      * 主键
      */
-    private Integer roleId;
+    @Id
+    @KeySql(useGeneratedKeys = true)
+    private Integer moduleId;
     /**
-     * 角色名称
+     * 模块名称
      */
-    private String roleName;
+    private String moduleName;
     /**
-     * 角色标识
+     * 模块访问路径
      */
-    private String roleValue;
+    private String moduleUrl;
     /**
-     * 禁用
+     * 父节点id
+     */
+    private Integer parentId;
+    /**
+     * 权重
+     */
+    private String sort;
+    /**
+     * 是否禁用
      */
     private String isDisable;
     @Transient
@@ -54,15 +59,11 @@ public class RoleEntity implements Serializable {
      */
     private Date updateTime;
     /**
-     * 角色拥有的模块组合
+     * 子模块集合
      */
-    private String moduleIds;
-    /**
-     * 权限集合
-     */
-    private Set<AuthorityEntity> authorities;
+    private List<ModuleEntity> systemModules;
 
-    public RoleEntity setIsDisable(String isDisable) {
+    public ModuleEntity setIsDisable(String isDisable) {
         this.isDisable = isDisable;
         this.isDisableShow = "0".equals(isDisable) ? "正常" : "禁用";
         return this;

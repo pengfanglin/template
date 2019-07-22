@@ -3,7 +3,6 @@ package com.fanglin.service.impl;
 import com.fanglin.core.others.Ajax;
 import com.fanglin.core.others.ValidateException;
 import com.fanglin.mapper.MapperFactory;
-import com.fanglin.model.others.SendCodeModel;
 import com.fanglin.service.OthersService;
 import com.fanglin.utils.OthersUtils;
 import com.fanglin.utils.RegexUtils;
@@ -29,24 +28,23 @@ public class OthersServiceImpl implements OthersService {
     @Autowired
     JedisPool jedisPool;
 
-    /**
-     * 发送验证码
-     *
-     * @param mobile 手机号
-     * @return
-     */
     @Override
     public Ajax sendCode(String mobile) {
         if (RegexUtils.checkMobile(mobile)) {
             return Ajax.error("手机号不合法");
         }
         try (Jedis jedis = jedisPool.getResource()) {
+            int time = 0;
             while (true) {
+                time++;
                 String code = OthersUtils.createRandom(4);
                 if (jedis.get(mobile) == null) {
                     SmsUtils.zhuTong(mobile, code);
                     jedis.set(String.format("code:%s_%s", mobile, code), "", "ex", 60);
                     return Ajax.ok(code);
+                }
+                if (time > 100) {
+                    return Ajax.error("生成验证码超时，请稍后重试");
                 }
             }
         } catch (Exception e) {

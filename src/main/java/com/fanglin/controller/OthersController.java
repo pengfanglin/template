@@ -1,9 +1,6 @@
 package com.fanglin.controller;
 
 import com.fanglin.core.others.Ajax;
-import com.fanglin.entity.others.CodeEntity;
-import com.fanglin.enums.pay.TestEnum;
-import com.fanglin.model.others.SendCodeModel;
 import com.fanglin.service.OthersService;
 import com.fanglin.service.SystemService;
 import com.fanglin.utils.*;
@@ -17,8 +14,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
-
-import java.util.Date;
 
 /**
  * 其他接口控制器

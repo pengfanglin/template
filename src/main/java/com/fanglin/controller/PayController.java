@@ -11,6 +11,10 @@ import com.fanglin.utils.LogUtils;
 import com.fanglin.utils.OthersUtils;
 import com.fanglin.utils.PayUtils;
 import com.fanglin.utils.UUIDUtils;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -30,11 +34,16 @@ import java.util.Map;
  **/
 @RestController
 @RequestMapping("/pay/")
+@Api(value = "/pay/", tags = {"支付"})
 public class PayController {
 
     @Autowired
     PayService payService;
 
+    @ApiOperation("支付测试")
+    @ApiImplicitParams({
+        @ApiImplicitParam(name = "openId", value = "支付的openId")
+    })
     @PostMapping("pay")
     public Ajax pay(String openId) {
         CommonPay commonPay = new CommonPay()
@@ -43,17 +52,15 @@ public class PayController {
             .setPayBusinessType(PayBusinessTypeEnum.TEST)
             .setBody("测试支付")
             .setOrderName("测试支付")
-            .setOpenid(OthersUtils.isEmpty(openId)?"oGDHy0NDoGmgMHyIt3PlHvOxujkk":openId)
+            .setOpenid(OthersUtils.isEmpty(openId) ? "oGDHy0NDoGmgMHyIt3PlHvOxujkk" : openId)
             .setCreatorId(1L)
             .setPayCreatorType(PayCreatorTypeEnum.USER)
             .setOrderNo(String.valueOf(UUIDUtils.nextId()));
         return Ajax.ok(PayUtils.pay(commonPay));
     }
 
-    /**
-     * 支付宝支付回调
-     */
-    @RequestMapping("alipayPayNotify")
+    @ApiOperation("支付宝支付成功回调")
+    @PostMapping("alipayPayNotify")
     public String alipayPayNotify(@RequestParam Map<String, String> params) {
         if (payService.alipayPayNotify(params)) {
             return "success";
@@ -62,10 +69,8 @@ public class PayController {
         }
     }
 
-    /**
-     * 微信App支付回调
-     */
-    @RequestMapping("wxPayNotify")
+    @ApiOperation("微信支付成功回调")
+    @PostMapping("wxPayNotify")
     public String wxPayNotify(HttpServletRequest request) {
         Map<String, Object> params = OthersUtils.xmlToMap(OthersUtils.readDataFromRequest(request));
         //如果业务处理成功，则向微信发送确认信息
@@ -77,11 +82,8 @@ public class PayController {
         }
     }
 
-
-    /**
-     * 微信App商城订单退款回调
-     */
-    @RequestMapping("wxRefundNotify")
+    @ApiOperation("微信订单退款回调")
+    @PostMapping("wxRefundNotify")
     public String wxRefundNotify(HttpServletRequest request) {
         Map<String, Object> params = OthersUtils.xmlToMap(OthersUtils.readDataFromRequest(request));
         //如果业务处理成功，则向微信发送确认信息

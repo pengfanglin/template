@@ -1,14 +1,12 @@
 package com.fanglin.service;
 
-import com.fanglin.entity.auth.RoleEntity;
-import com.fanglin.entity.others.BannerEntity;
-import com.fanglin.entity.others.HtmlStyleEntity;
-import com.fanglin.entity.system.SystemAccountEntity;
-import com.fanglin.entity.system.SystemHtmlEntity;
-import com.fanglin.entity.system.SystemModuleEntity;
+import com.fanglin.core.others.Ajax;
 import com.fanglin.core.page.Page;
 import com.fanglin.core.page.PageResult;
-import org.apache.ibatis.annotations.Param;
+import com.fanglin.model.system.ModuleModel;
+import com.fanglin.model.system.ModuleTreeModel;
+import com.fanglin.model.system.RoleModel;
+import com.fanglin.model.system.AccountModel;
 
 import java.util.List;
 
@@ -23,53 +21,53 @@ public interface SystemService {
      *
      * @return
      */
-    List<SystemModuleEntity> getSystemModuleTree();
+    Ajax<List<ModuleTreeModel>> getSystemModuleTree();
 
     /**
      * 系统账号左侧菜单树
      *
-     * @param accountId 账号id
+     * @param id 账号id
      * @return
      */
-    List<SystemModuleEntity> getLeftMenuTree(Integer accountId);
+    Ajax<List<ModuleTreeModel>> getLeftMenuTree(Integer id);
 
     /**
      * 获取系统模块列表
      *
-     * @param systemModule
+     * @param module
      * @param page
      * @return
      */
-    PageResult<SystemModuleEntity> getSystemModuleList(SystemModuleEntity systemModule, Page page);
+    Ajax<PageResult<ModuleModel>> getSystemModuleList(ModuleModel module, Page page);
 
     /**
      * 添加系统模块
      *
-     * @param systemModule
+     * @param module
      */
-    int insertSystemModule(SystemModuleEntity systemModule);
+    int insertSystemModule(ModuleModel module);
 
     /**
      * 删除系统模块
      *
-     * @param moduleId
+     * @param id
      */
-    int deleteSystemModule(@Param("moduleId") Integer moduleId);
+    int deleteSystemModule(Integer id);
 
     /**
      * 修改系统模块
      *
-     * @param systemModule
+     * @param module
      */
-    int updateSystemModule(SystemModuleEntity systemModule);
+    int updateSystemModule(ModuleModel module);
 
     /**
      * 系统模块详情
      *
-     * @param moduleId
+     * @param id
      * @return
      */
-    SystemModuleEntity getSystemModuleDetail(@Param("moduleId") Integer moduleId);
+    Ajax<ModuleModel> getSystemModuleDetail(Integer id);
 
     /**
      * 角色列表
@@ -77,155 +75,73 @@ public interface SystemService {
      * @param page
      * @return
      */
-    PageResult<RoleEntity> getRoleList(Page page);
+    Ajax<PageResult<RoleModel>> getRoleList(Page page);
 
     /**
      * 角色详情
      *
-     * @param roleId
+     * @param id
      * @return
      */
-    RoleEntity getRoleDetail(@Param("roleId") Integer roleId);
+    Ajax<RoleModel> getRoleDetail(Integer id);
 
     /**
      * 修改角色信息
      *
      * @param role
      */
-    int updateRole(RoleEntity role);
+    Ajax updateRole(RoleModel role);
 
     /**
      * 删除角色
      *
-     * @param roleId
+     * @param id
      */
-    int deleteRole(@Param("roleId") Integer roleId);
+    Ajax deleteRole(Integer id);
 
     /**
      * 添加角色信息
      *
      * @param role
      */
-    int insertRole(RoleEntity role);
-
-    /**
-     * 添加系统html
-     *
-     * @param systemHtml
-     */
-    int insertHtml(SystemHtmlEntity systemHtml);
-
-    /**
-     * 删除系统html
-     *
-     * @param htmlId
-     */
-    int deleteHtml(@Param("htmlId") Integer htmlId);
-
-    /**
-     * 修改系统html
-     *
-     * @param systemHtml
-     */
-    int updateHtml(SystemHtmlEntity systemHtml);
-
-    /**
-     * 系统html详情
-     *
-     * @param htmlId
-     * @return
-     */
-    SystemHtmlEntity getHtmlDetail(@Param("htmlId") Integer htmlId);
-
-    /**
-     * 系统html列表
-     *
-     * @param page
-     * @return
-     */
-    PageResult<SystemHtmlEntity> getHtmlList(Page page);
-
-    /**
-     * 系统广告列表
-     *
-     * @param banner
-     * @param page
-     * @return
-     */
-    PageResult<BannerEntity> getBannerList(BannerEntity banner, Page page);
-
-    /**
-     * 系统广告详情
-     *
-     * @param bannerId
-     * @return
-     */
-    BannerEntity getBannerDetail(@Param("accountId") Integer bannerId);
-
-    /**
-     * 修改系统广告
-     *
-     * @param banner
-     */
-    int updateBanner(BannerEntity banner);
-
-    /**
-     * 删除系统广告
-     *
-     * @param bannerId
-     */
-    int deleteBanner(@Param("accountId") Integer bannerId);
-
-    /**
-     * 添加系统广告
-     *
-     * @param banner
-     */
-    int insertBanner(BannerEntity banner);
-
-    /**
-     * 获取html样式模板
-     *
-     * @param htmlStyle
-     * @return
-     */
-    HtmlStyleEntity getHtmlStyle(HtmlStyleEntity htmlStyle);
+    Ajax insertRole(RoleModel role);
 
     /**
      * 账号详情
      *
-     * @param accountId
+     * @param id
      * @return
      */
-    SystemAccountEntity getSystemAccountDetail(@Param("accountId") Integer accountId);
+    Ajax<AccountModel> getSystemAccountDetail(Integer id);
 
     /**
      * 系统账号列表
      *
-     * @param systemAccount
-     * @param page
+     * @param username  用户名
+     * @param isDisable 是否禁用
+     * @param page      分页
      * @return
      */
-    PageResult<SystemAccountEntity> getSystemAccountList(SystemAccountEntity systemAccount, Page page);
+    Ajax<PageResult<AccountModel>> getSystemAccountList(String username, String isDisable, Page page);
 
     /**
      * 修改系统账号
      *
-     * @param systemAccount
+     * @param account 系统账号
      */
-    int updateSystemAccount(SystemAccountEntity systemAccount);
+    Ajax updateSystemAccount(AccountModel account);
 
     /**
      * 添加系统账号
      *
-     * @param systemAccount
+     * @param account 账号
      */
-    int insertSystemAccount(SystemAccountEntity systemAccount);
+    Ajax insertSystemAccount(AccountModel account);
 
     /**
      * 删除系统账号
      *
-     * @param accountId
+     * @param id 账号id
      */
-    int deleteSystemAccount(Integer accountId);
+    Ajax deleteSystemAccount(Integer id);
 }

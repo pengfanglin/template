@@ -3,8 +3,6 @@ package com.fanglin.entity.system;
 import lombok.Data;
 import lombok.experimental.Accessors;
 import tk.mybatis.mapper.annotation.KeySql;
-import tk.mybatis.mapper.annotation.Order;
-import tk.mybatis.mapper.code.IdentityDialect;
 
 import javax.persistence.Id;
 import javax.persistence.Table;
@@ -13,42 +11,48 @@ import java.io.Serializable;
 import java.util.Date;
 
 /**
- * 系统html(关于我们,用户须知等等)
+ * 系统账号实体类
  *
  * @author 彭方林
  * @version 1.0
- * @date 2019/4/3 16:42
+ * @date 2019/4/3 16:40
  **/
 @Data
 @Accessors(chain = true)
-@Table(name = "system_html")
-public class SystemHtmlEntity implements Serializable {
+@Table(name = "system_account")
+public class AccountEntity implements Serializable {
     /**
      * 主键
      */
     @Id
     @KeySql(useGeneratedKeys = true)
-    @Order
-    private Integer htmlId;
+    private Integer accountId;
     /**
-     * 名称
+     * 用户名
      */
-    private String htmlName;
+    private String username;
     /**
-     * url路径
+     * 密码
      */
-    private String htmlUrl;
+    private String password;
     /**
-     * 内容
+     * 头像
      */
-    @Transient
-    private String htmlUrlContent;
+    private String headImg;
     /**
-     * 权重
+     * 是否禁用
      */
-    private Integer sort;
+    private String isDisable;
+    /**
+     * 角色id组合
+     */
+    private String roleIds;
     /**
      * 创建时间
      */
     private Date createTime;
+    /**
+     * 创建时间
+     */
+    private Date updateTime;
 }
