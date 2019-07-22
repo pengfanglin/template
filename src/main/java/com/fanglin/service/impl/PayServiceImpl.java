@@ -8,7 +8,7 @@ import com.fanglin.entity.pay.PayHistoryEntity;
 import com.fanglin.entity.pay.RefundHistoryEntity;
 import com.fanglin.enums.pay.PayBusinessTypeEnum;
 import com.fanglin.enums.pay.PayWayEnum;
-import com.fanglin.core.others.ValidateException;
+import com.fanglin.core.others.BusinessException;
 import com.fanglin.mapper.MapperFactory;
 import com.fanglin.service.PayService;
 import com.fanglin.utils.EncodeUtils;
@@ -43,12 +43,12 @@ public class PayServiceImpl implements PayService {
     @Transactional(rollbackFor = RuntimeException.class)
     public boolean paySuccessHandler(CommonPay commonPay) {
         if (commonPay.getHistoryId() == null) {
-            throw new ValidateException("支付记录id不能为空");
+            throw new BusinessException("支付记录id不能为空");
         }
         PayHistoryEntity payHistory = mapperFactory.payHistoryMapper.selectByPrimaryKey(commonPay.getHistoryId());
         Assert.notNull(payHistory, "支付记录不存在");
         if (payHistory.getPayAmount().compareTo(commonPay.getPayAmount()) != 0) {
-            throw new ValidateException(String.format("支付金额有误,预期支付:%s,实际支付:%s", payHistory.getPayAmount().toString(), commonPay.getPayAmount().toString()));
+            throw new BusinessException(String.format("支付金额有误,预期支付:%s,实际支付:%s", payHistory.getPayAmount().toString(), commonPay.getPayAmount().toString()));
         }
         //支付记录设为已支付
         mapperFactory.payHistoryMapper.updateByPrimaryKeySelective(new PayHistoryEntity().setHistoryId(payHistory.getHistoryId()).setState(1).setTradeNo(commonPay.getTradeNo()));
@@ -58,7 +58,7 @@ public class PayServiceImpl implements PayService {
             case TEST:
                 return true;
             default:
-                throw new ValidateException("业务逻辑未实现");
+                throw new BusinessException("业务逻辑未实现");
         }
     }
 
@@ -70,7 +70,7 @@ public class PayServiceImpl implements PayService {
         RefundHistoryEntity refundHistory = mapperFactory.refundHistoryMapper.selectOne(new RefundHistoryEntity().setOrderNo(commonRefund.getRefundNo()));
         Assert.notNull(refundHistory, "退款记录不存在");
         if (refundHistory.getRefundAmount().compareTo(commonRefund.getRefundAmount()) != 0) {
-            throw new ValidateException(String.format("退款金额有误,预期退款:%s,实际退款:%s", refundHistory.getRefundAmount().toString(), commonRefund.getRefundAmount().toString()));
+            throw new BusinessException(String.format("退款金额有误,预期退款:%s,实际退款:%s", refundHistory.getRefundAmount().toString(), commonRefund.getRefundAmount().toString()));
         }
         //支付记录设为已支付
         mapperFactory.refundHistoryMapper.updateByPrimaryKeySelective(
@@ -86,7 +86,7 @@ public class PayServiceImpl implements PayService {
             case TEST:
                 return true;
             default:
-                throw new ValidateException("业务逻辑未实现");
+                throw new BusinessException("业务逻辑未实现");
         }
     }
 

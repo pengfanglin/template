@@ -1,7 +1,7 @@
 package com.fanglin.service.impl;
 
 import com.fanglin.core.others.Ajax;
-import com.fanglin.core.others.ValidateException;
+import com.fanglin.core.others.BusinessException;
 import com.fanglin.mapper.MapperFactory;
 import com.fanglin.service.OthersService;
 import com.fanglin.utils.OthersUtils;
@@ -48,7 +48,7 @@ public class OthersServiceImpl implements OthersService {
                 }
             }
         } catch (Exception e) {
-            throw new ValidateException(e.getMessage());
+            throw new BusinessException(e.getMessage());
         }
     }
 

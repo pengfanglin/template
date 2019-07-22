@@ -1,4 +1,4 @@
-package com.fanglin.enums;
+package com.fanglin.core.enums;
 
 import org.apache.ibatis.type.BaseTypeHandler;
 import org.apache.ibatis.type.JdbcType;
@@ -26,7 +26,7 @@ public class CodeEnumTypeHandler<E extends Enum<?> & CodeEnum> extends BaseTypeH
 
     @Override
     public void setNonNullParameter(PreparedStatement ps, int i, CodeEnum parameter, JdbcType jdbcType)
-        throws SQLException {
+            throws SQLException {
         ps.setInt(i, parameter.getCode());
     }
 
@@ -48,7 +48,7 @@ public class CodeEnumTypeHandler<E extends Enum<?> & CodeEnum> extends BaseTypeH
         return cs.wasNull() ? null : codeOf(code);
     }
 
-    private E codeOf(int code) {
+    private E codeOf(int code){
         return CodeEnum.find(type, code);
     }
 }

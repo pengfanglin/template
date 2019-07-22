@@ -1,23 +1,21 @@
 package com.fanglin.controller;
 
-import com.fanglin.core.token.TokenInfo;
-import com.fanglin.entity.system.RoleEntity;
-import com.fanglin.entity.others.BannerEntity;
-import com.fanglin.entity.system.ModuleEntity;
+import com.fanglin.core.page.PageResult;
 import com.fanglin.core.others.Ajax;
-import com.fanglin.entity.others.HtmlStyleEntity;
-import com.fanglin.entity.system.AccountEntity;
-import com.fanglin.entity.system.SystemHtmlEntity;
 import com.fanglin.core.page.Page;
 import com.fanglin.model.system.AccountModel;
+import com.fanglin.model.system.ModuleModel;
+import com.fanglin.model.system.ModuleTreeModel;
+import com.fanglin.model.system.RoleModel;
 import com.fanglin.service.SystemService;
-import com.fanglin.utils.OthersUtils;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 /**
  * 系统
@@ -38,7 +36,7 @@ public class SystemController extends BaseController {
         @ApiImplicitParam(name = "id", value = "账号id", required = true)
     })
     @PostMapping("getSystemAccountDetail")
-    public Ajax getSystemAccountDetail(@RequestParam Integer id) {
+    public Ajax<AccountModel> getSystemAccountDetail(@RequestParam Integer id) {
         return Ajax.ok(systemService.getSystemAccountDetail(id));
     }
 
@@ -48,7 +46,7 @@ public class SystemController extends BaseController {
         @ApiImplicitParam(name = "isDisable", value = "是否禁用")
     })
     @PostMapping("getSystemAccountList")
-    public Ajax getSystemAccountList(String username, String isDisable, Page page) {
+    public Ajax<PageResult<AccountModel>> getSystemAccountList(String username, String isDisable, Page page) {
         return Ajax.ok(systemService.getSystemAccountList(username, isDisable, page));
     }
 
@@ -59,325 +57,114 @@ public class SystemController extends BaseController {
         return Ajax.ok();
     }
 
-    /**
-     * 添加系统账号
-     *
-     * @param systemAccount
-     * @return
-     */
+    @ApiOperation("添加系统账号")
     @PostMapping("insertSystemAccount")
-    public Ajax insertSystemAccount(AccountEntity systemAccount) {
+    public Ajax insertSystemAccount(AccountModel systemAccount) {
         systemService.insertSystemAccount(systemAccount);
         return Ajax.ok();
     }
 
-    /**
-     * 删除系统账号
-     *
-     * @param accountId
-     * @return
-     */
+    @ApiOperation("删除系统账号")
+    @ApiImplicitParams({
+        @ApiImplicitParam(name = "id", value = "账号id", required = true),
+    })
     @PostMapping("deleteSystemAccount")
-    public Ajax deleteSystemAccount(Integer accountId) {
-        if (systemService.deleteSystemAccount(accountId) > 0) {
-            return Ajax.ok();
-        } else {
-            return Ajax.error("删除失败");
-        }
+    public Ajax deleteSystemAccount(Integer id) {
+        systemService.deleteSystemAccount(id);
+        return Ajax.ok();
     }
 
-    /**
-     * 系统模块树
-     *
-     * @return
-     */
+    @ApiOperation("系统模块树")
     @PostMapping("getSystemModuleTree")
-    public Ajax getSystemModuleTree(TokenInfo tokenInfo) {
+    public Ajax<List<ModuleTreeModel>> getSystemModuleTree() {
         return Ajax.ok(systemService.getSystemModuleTree());
     }
 
-    /**
-     * 系统账号左侧菜单树
-     *
-     * @param accountId
-     * @return
-     */
+    @ApiOperation("左侧菜单树")
+    @ApiImplicitParams({
+        @ApiImplicitParam(name = "id", value = "账号id", required = true),
+    })
     @PostMapping("getLeftMenuTree")
-    public Ajax getLeftMenuTree(Integer accountId) {
-        return Ajax.ok(systemService.getLeftMenuTree(accountId));
+    public Ajax<List<ModuleTreeModel>> getLeftMenuTree(@RequestParam Integer id) {
+        return Ajax.ok(systemService.getLeftMenuTree(id));
     }
 
-    /**
-     * 获取系统模块列表
-     *
-     * @param page
-     * @param systemModule
-     * @return
-     */
+    @ApiOperation("系统模块列表")
     @PostMapping("getSystemModuleList")
-    public Ajax getSystemModuleList(Page page, ModuleEntity systemModule) {
-        return Ajax.ok(systemService.getSystemModuleList(systemModule, page));
+    public Ajax<PageResult<ModuleModel>> getSystemModuleList(Page page, ModuleModel module) {
+        return Ajax.ok(systemService.getSystemModuleList(module, page));
     }
 
-    /**
-     * 添加系统模块
-     *
-     * @param systemModule
-     * @return
-     */
+    @ApiOperation("添加系统模块")
     @PostMapping("insertSystemModule")
-    public Ajax insertSystemModule(ModuleEntity systemModule) {
-        systemService.insertSystemModule(systemModule);
-        return Ajax.ok("添加成功");
+    public Ajax insertSystemModule(ModuleModel module) {
+        systemService.insertSystemModule(module);
+        return Ajax.ok();
     }
 
-    /**
-     * 删除系统模块
-     *
-     * @param moduleId
-     * @return
-     */
+    @ApiOperation("删除系统模块")
+    @ApiImplicitParams({
+        @ApiImplicitParam(name = "id", value = "模块id", required = true)
+    })
     @PostMapping("deleteSystemModule")
-    public Ajax deleteSystemModule(@RequestParam("moduleId") Integer moduleId) {
-        systemService.deleteSystemModule(moduleId);
-        return Ajax.ok("删除成功");
+    public Ajax deleteSystemModule(@RequestParam Integer id) {
+        systemService.deleteSystemModule(id);
+        return Ajax.ok();
     }
 
-    /**
-     * 修改系统模块
-     *
-     * @param systemModule
-     * @return
-     */
+    @ApiOperation("修改系统模块")
     @PostMapping("updateSystemModule")
-    public Ajax updateSystemModule(ModuleEntity systemModule) {
-        systemService.updateSystemModule(systemModule);
-        return Ajax.ok("修改成功");
+    public Ajax updateSystemModule(ModuleModel module) {
+        systemService.updateSystemModule(module);
+        return Ajax.ok();
     }
 
-    /**
-     * 单个系统模块详情
-     *
-     * @param moduleId
-     * @return
-     */
+    @ApiOperation("模块详情")
+    @ApiImplicitParams({
+        @ApiImplicitParam(name = "id", value = "模块id", required = true)
+    })
     @PostMapping("getSystemModuleDetail")
-    public Ajax getSystemModuleDetail(@RequestParam("moduleId") Integer moduleId) {
-        return Ajax.ok(systemService.getSystemModuleDetail(moduleId));
+    public Ajax<ModuleModel> getSystemModuleDetail(@RequestParam Integer id) {
+        return Ajax.ok(systemService.getSystemModuleDetail(id));
     }
 
-    /**
-     * 添加角色
-     *
-     * @param role
-     * @return
-     */
+    @ApiOperation("添加角色")
     @PostMapping("insertRole")
-    public Ajax insertRole(RoleEntity role) {
+    public Ajax insertRole(RoleModel role) {
         systemService.insertRole(role);
-        return Ajax.ok("添加成功");
+        return Ajax.ok();
     }
 
-    /**
-     * 删除角色
-     *
-     * @param roleId
-     * @return
-     */
+    @ApiOperation("删除角色")
+    @ApiImplicitParams({
+        @ApiImplicitParam(name = "id", value = "角色id", required = true)
+    })
     @PostMapping("deleteRole")
-    public Ajax deleteRole(@RequestParam("roleId") Integer roleId) {
-        int num = systemService.deleteRole(roleId);
-        System.out.println(num);
-        return Ajax.ok("删除成功");
+    public Ajax deleteRole(@RequestParam Integer id) {
+        systemService.deleteRole(id);
+        return Ajax.ok();
     }
 
-    /**
-     * 修改角色
-     *
-     * @param role
-     * @return
-     */
+    @ApiOperation("修改角色")
     @PostMapping("updateRole")
-    public Ajax updateRole(RoleEntity role) {
-        int num = systemService.updateRole(role);
-        System.out.println(num);
-        return Ajax.ok("修改成功");
+    public Ajax updateRole(RoleModel role) {
+        systemService.updateRole(role);
+        return Ajax.ok();
     }
 
-    /**
-     * 角色详情
-     *
-     * @param roleId
-     * @return
-     */
+    @ApiOperation("角色详情")
+    @ApiImplicitParams({
+        @ApiImplicitParam(name = "id", value = "角色id", required = true)
+    })
     @PostMapping("getRoleDetail")
-    public Ajax getRoleDetail(@RequestParam("roleId") Integer roleId) {
-        return Ajax.ok(systemService.getRoleDetail(roleId));
+    public Ajax<RoleModel> getRoleDetail(@RequestParam Integer id) {
+        return Ajax.ok(systemService.getRoleDetail(id));
     }
 
-    /**
-     * 角色列表
-     *
-     * @param page
-     * @return
-     */
+    @ApiOperation("角色列表")
     @PostMapping("getRoleList")
-    public Ajax getRoleList(Page page) {
+    public Ajax<PageResult<RoleModel>> getRoleList(Page page) {
         return Ajax.ok(systemService.getRoleList(page));
     }
 
-    /**
-     * 添加系统html
-     *
-     * @param systemHtml
-     * @return
-     */
-    @PostMapping("insertHtml")
-    public Ajax insertHtml(SystemHtmlEntity systemHtml) {
-        systemService.insertHtml(systemHtml);
-        return Ajax.ok("操作成功");
-    }
-
-    /**
-     * 删除系统html
-     *
-     * @param htmlId
-     * @return
-     */
-    @PostMapping("deleteHtml")
-    public Ajax deleteHtml(@RequestParam("htmlId") Integer htmlId) {
-        systemService.deleteHtml(htmlId);
-        return Ajax.ok("操作成功");
-    }
-
-    /**
-     * 修改系统html
-     *
-     * @param systemHtml
-     * @return
-     */
-    @PostMapping("updateHtml")
-    public Ajax updateHtml(SystemHtmlEntity systemHtml) {
-        systemService.updateHtml(systemHtml);
-        return Ajax.ok("操作成功");
-    }
-
-    /**
-     * 系统html详情
-     *
-     * @param htmlId
-     * @return
-     */
-    @PostMapping("getHtmlDetail")
-    public Ajax getHtmlDetail(@RequestParam("htmlId") Integer htmlId) {
-        return Ajax.ok(systemService.getHtmlDetail(htmlId));
-    }
-
-    /**
-     * 系统html列表
-     *
-     * @param page
-     * @return
-     */
-    @PostMapping("getHtmlList")
-    public Ajax getHtmlList(Page page) {
-        return Ajax.ok(systemService.getHtmlList(page));
-    }
-
-    /**
-     * 添加系统广告
-     *
-     * @param banner
-     * @return
-     */
-    @PostMapping("insertBanner")
-    public Ajax insertBanner(BannerEntity banner) {
-        systemService.insertBanner(banner);
-        return Ajax.ok("操作成功");
-    }
-
-    /**
-     * 删除系统广告
-     *
-     * @param bannerId
-     * @return
-     */
-    @PostMapping("deleteBanner")
-    public Ajax deleteBanner(@RequestParam("bannerId") Integer bannerId) {
-        systemService.deleteBanner(bannerId);
-        return Ajax.ok("操作成功");
-    }
-
-    /**
-     * 修改系统广告
-     *
-     * @param banner
-     * @return
-     */
-    @PostMapping("updateBanner")
-    public Ajax updateBanner(BannerEntity banner) {
-        systemService.updateBanner(banner);
-        return Ajax.ok("操作成功");
-    }
-
-    /**
-     * 系统广告详情
-     *
-     * @param bannerId
-     * @return
-     */
-    @PostMapping("getBannerDetail")
-    public Ajax getBannerDetail(@RequestParam("bannerId") Integer bannerId) {
-        return Ajax.ok(systemService.getBannerDetail(bannerId));
-    }
-
-    /**
-     * 系统广告列表
-     *
-     * @param banner
-     * @param page
-     * @return
-     */
-    @PostMapping("getBannerList")
-    public Ajax getBannerList(BannerEntity banner, Page page) {
-        return Ajax.ok(systemService.getBannerList(banner, page));
-    }
-
-    /**
-     * html文件内容
-     *
-     * @param url
-     * @return
-     */
-    @PostMapping("getHtmlDesc")
-    public Ajax getHtmlDesc(String url) {
-        try {
-            String desc = OthersUtils.readHtml(url);
-            int start = desc.indexOf("<content>");
-            int end = desc.lastIndexOf("</content>");
-            if (start >= 0 && end >= 0) {
-                desc = desc.substring(start + 9, end);
-            }
-            return Ajax.ok(desc);
-        } catch (Exception e) {
-            return Ajax.error("读取内容出现异常");
-        }
-    }
-
-    /**
-     * 修改html文件内容
-     *
-     * @param url
-     * @param desc
-     * @return
-     */
-    @PostMapping("setHtmlDesc")
-    public Ajax setHtmlDesc(String url, String desc) {
-        HtmlStyleEntity htmlStyle = systemService.getHtmlStyle(new HtmlStyleEntity().setStyleType("common"));
-        if (OthersUtils.writeHtml(url, desc, htmlStyle.getStyleDesc())) {
-            return Ajax.ok("保存成功");
-        } else {
-            return Ajax.error("保存失败");
-        }
-    }
 }

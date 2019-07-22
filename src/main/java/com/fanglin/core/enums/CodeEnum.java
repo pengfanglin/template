@@ -1,4 +1,4 @@
-package com.fanglin.enums;
+package com.fanglin.core.enums;
 
 /**
  * 实体类枚举实现该接口才能存到数据库

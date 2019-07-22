@@ -42,4 +42,7 @@ public class ModuleTreeModel {
 
     @ApiModelProperty(value = "创建时间")
     private Date createTime;
+
+    @ApiModelProperty(value = "子模块")
+    private List<ModuleTreeModel> childModules;
 }

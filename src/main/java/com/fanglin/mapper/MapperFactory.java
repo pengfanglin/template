@@ -1,6 +1,5 @@
 package com.fanglin.mapper;
 
-import com.fanglin.entity.pay.RefundHistoryEntity;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -13,22 +12,26 @@ import org.springframework.stereotype.Component;
  **/
 @Component
 public class MapperFactory {
+    /**
+     * 其他
+     */
     @Autowired
     public OthersMapper othersMapper;
+    /**
+     * 账号
+     */
     @Autowired
-    public SystemAccountMapper systemAccountMapper;
+    public AccountMapper accountMapper;
+    /**
+     * 模块
+     */
     @Autowired
-    public SystemModuleMapper systemModuleMapper;
+    public ModuleMapper moduleMapper;
+    /**
+     * 角色
+     */
     @Autowired
     public RoleMapper roleMapper;
-    @Autowired
-    public SystemHtmlMapper systemHtmlMapper;
-    @Autowired
-    public HtmlStyleMapper htmlStyleMapper;
-    @Autowired
-    public BannerMapper bannerMapper;
-    @Autowired
-    public CodeMapper codeMapper;
     /**
      * 支付记录
      **/

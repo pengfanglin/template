@@ -4,14 +4,13 @@ server:
     worker-threads: 128
     buffer-size: 1024
     direct-buffers: true
-  port: 80
 mybatis:
-  type-aliases-package: com.fanglin.entity
+  type-aliases-package: com.fanglin.entity,com.fanglin.model
   mapper-locations: classpath:mapper/*.xml
   configuration:
     map-underscore-to-camel-case: true
     log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
-    default-enum-type-handler: com.fanglin.enums.CodeEnumTypeHandler
+    default-enum-type-handler: com.fanglin.core.enums.CodeEnumTypeHandler
 spring:
   jmx:
     enabled: false
@@ -30,19 +29,6 @@ spring:
       maximum-pool-size: 2000
       pool-name: hikariCP
       connection-timeout: 10000
-  redis:
-    host: 127.0.0.1
-    port: 6379
-    database: 0
-    password: 123456
-  session:
-    #spring session采用的数据源类型
-    store-type: redis
-    redis:
-      #配置session在redis里的命名空间
-      namespace: security_session
-      #配置session的保存触发方式
-      flush-mode: on_save
 common:
   jedis: true
   #静态资源默认保存根路径

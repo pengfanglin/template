@@ -1,6 +1,6 @@
 package com.fanglin.utils;
 
-import com.fanglin.core.others.ValidateException;
+import com.fanglin.core.others.BusinessException;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
@@ -103,7 +103,7 @@ public class HttpUtils {
             }
         } catch (IOException e) {
             log.error("get请求发送失败:{}",e.getMessage());
-            throw new ValidateException("get请求发送失败:"+e.getMessage());
+            throw new BusinessException("get请求发送失败:"+e.getMessage());
         } finally {
             if (response != null) {
                 try {
@@ -155,7 +155,7 @@ public class HttpUtils {
             return null;
         } catch (IOException e) {
             log.error("post请求发送失败:{}",e.getMessage());
-            throw new ValidateException("post请求发送失败:"+e.getMessage());
+            throw new BusinessException("post请求发送失败:"+e.getMessage());
         } finally {
             if (response != null) {
                 try {
@@ -202,7 +202,7 @@ public class HttpUtils {
                 sb.append(ch).append(entry.getKey()).append("=").append(encodeParams);
             } catch (UnsupportedEncodingException e) {
                 log.warn(e.getMessage());
-                throw new ValidateException("get请求参数编码失败:");
+                throw new BusinessException("get请求参数编码失败:");
             }
         }
         return sb.toString();
@@ -238,11 +238,11 @@ public class HttpUtils {
                 return EntityUtils.toString(res.getEntity());
             } else {
                 log.warn("{} {}",statusCode,res.getEntity());
-                throw new ValidateException(statusCode + " " + res.getEntity());
+                throw new BusinessException(statusCode + " " + res.getEntity());
             }
         } catch (Exception e) {
             log.warn(e.getMessage());
-            throw new ValidateException(e.getMessage());
+            throw new BusinessException(e.getMessage());
         }
     }
 
@@ -266,11 +266,11 @@ public class HttpUtils {
                 return EntityUtils.toString(res.getEntity(), "UTF-8");
             } else {
                 log.warn("{} {}",res.getStatusLine().getStatusCode() +EntityUtils.toString(res.getEntity(), "UTF-8"));
-                throw new ValidateException(res.getStatusLine().getStatusCode() + " " + EntityUtils.toString(res.getEntity(), "UTF-8"));
+                throw new BusinessException(res.getStatusLine().getStatusCode() + " " + EntityUtils.toString(res.getEntity(), "UTF-8"));
             }
         } catch (Exception e) {
             log.warn(e.getMessage());
-            throw new ValidateException(e.getMessage());
+            throw new BusinessException(e.getMessage());
         }
     }
 

@@ -65,7 +65,7 @@ public class PayController {
         if (payService.alipayPayNotify(params)) {
             return "success";
         } else {
-            return null;
+            return "";
         }
     }
 
@@ -91,7 +91,7 @@ public class PayController {
         if (result != null) {
             return OthersUtils.mapToXml(result);
         } else {
-            return null;
+            return "";
         }
     }
 

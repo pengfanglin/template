@@ -10,7 +10,7 @@ import com.alipay.api.response.AlipayTradeAppPayResponse;
 import com.alipay.api.response.AlipayTradeRefundResponse;
 
 import com.fanglin.core.others.Assert;
-import com.fanglin.core.others.ValidateException;
+import com.fanglin.core.others.BusinessException;
 import com.fanglin.core.pay.CommonPay;
 import com.fanglin.core.pay.CommonRefund;
 import com.fanglin.entity.pay.PayHistoryEntity;
@@ -25,10 +25,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.stereotype.Component;
 
-import java.io.UnsupportedEncodingException;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.net.URLEncoder;
 import java.util.*;
 
 /**
@@ -162,7 +160,7 @@ public class PayUtils {
         Assert.notNull(commonRefund.getRefundAmount(), "退款金额不能为空");
         //退款金额(单位分)
         if (commonRefund.getTotalAmount().compareTo(new BigDecimal(0)) <= 0) {
-            throw new ValidateException("退款金额必须大于0");
+            throw new BusinessException("退款金额必须大于0");
         }
         insertRefundHistory(commonRefund);
         switch (commonRefund.getPayWay()) {
@@ -202,7 +200,7 @@ public class PayUtils {
         }
         //支付金额(单位分)
         if (commonPay.getPayAmount().compareTo(new BigDecimal(0)) <= 0) {
-            throw new ValidateException("支付金额必须大于0");
+            throw new BusinessException("支付金额必须大于0");
         }
         params.put("body", commonPay.getBody());
         params.put("total_fee", commonPay.getPayAmount().multiply(new BigDecimal(100)).setScale(0, RoundingMode.DOWN).intValue());
@@ -280,11 +278,11 @@ public class PayUtils {
                 return signParams;
             } else {
                 log.warn("微信支付请求失败:{} ", params.get("err_code_des"));
-                throw new ValidateException("微信支付请求失败:" + params.get("err_code_des").toString());
+                throw new BusinessException("微信支付请求失败:" + params.get("err_code_des").toString());
             }
         } else {
             log.warn("支付失败:{} ", params.get("return_msg"));
-            throw new ValidateException("支付失败:" + params.get("return_msg").toString());
+            throw new BusinessException("支付失败:" + params.get("return_msg").toString());
         }
     }
 
@@ -316,11 +314,11 @@ public class PayUtils {
                 return true;
             } else {
                 log.warn("微信退款请求失败: {}" ,returnParam.get("err_code_des"));
-                throw new ValidateException("微信退款请求失败【" + returnParam.get("err_code_des") + "】");
+                throw new BusinessException("微信退款请求失败【" + returnParam.get("err_code_des") + "】");
             }
         } else {
             log.warn("连接微信退款服务失败: {}" ,returnParam.get("return_msg"));
-            throw new ValidateException("连接微信退款服务失败【" + returnParam.get("return_msg") + "】");
+            throw new BusinessException("连接微信退款服务失败【" + returnParam.get("return_msg") + "】");
         }
     }
 
@@ -338,12 +336,12 @@ public class PayUtils {
         Assert.notNull(commonRefund.getTotalAmount(), "订单总金额不能为空");
         //订单总金额(单位分)
         if (commonRefund.getTotalAmount().compareTo(new BigDecimal(0)) <= 0) {
-            throw new ValidateException("订单总金额必须大于0");
+            throw new BusinessException("订单总金额必须大于0");
         }
         params.put("total_fee", commonRefund.getTotalAmount().multiply(new BigDecimal(100)).setScale(0, BigDecimal.ROUND_DOWN).intValue());
         params.put("refund_fee", commonRefund.getRefundAmount().multiply(new BigDecimal(100)).setScale(0, BigDecimal.ROUND_DOWN).intValue());
         if (commonRefund.getTotalAmount().compareTo(commonRefund.getRefundAmount()) <= 0) {
-            throw new ValidateException("退款金额超出订单金额");
+            throw new BusinessException("退款金额超出订单金额");
         }
         params.put("notify_url", PayNotifyEnum.WX_REFUND.getValue());
     }
@@ -380,7 +378,7 @@ public class PayUtils {
             response = alipayClient.sdkExecute(payRequest);
         } catch (AlipayApiException e) {
             log.warn("连接支付宝服务失败:{}", e.getMessage());
-            throw new ValidateException("连接支付宝服务失败【" + e.getMessage() + "】");
+            throw new BusinessException("连接支付宝服务失败【" + e.getMessage() + "】");
         }
         //发起支付成功，将生成的支付凭证返给app
         if (response.isSuccess()) {
@@ -389,7 +387,7 @@ public class PayUtils {
             return result;
         } else {
             log.warn("生成支付凭据失败:{}", response.getMsg());
-            throw new ValidateException("生成支付凭据失败【" + response.getMsg() + "】");
+            throw new BusinessException("生成支付凭据失败【" + response.getMsg() + "】");
         }
     }
 
@@ -417,7 +415,7 @@ public class PayUtils {
             response = alipayClient.execute(request);
         } catch (AlipayApiException e) {
             log.warn("发起退款异常:{}",e.getErrMsg());
-            throw new ValidateException("发起退款异常");
+            throw new BusinessException("发起退款异常");
         }
         //发起退款成功
         if (response.isSuccess()) {
@@ -428,14 +426,14 @@ public class PayUtils {
                 commonRefund.setRefundAmount(new BigDecimal(response.getRefundFee()));
                 payService.refundSuccessHandler(commonRefund);
             } else if ("40004".equals(response.getCode())) {
-                throw new ValidateException("退款金额大于支付金额");
+                throw new BusinessException("退款金额大于支付金额");
             } else {
                 log.warn(response.getSubMsg());
-                throw new ValidateException(response.getSubMsg());
+                throw new BusinessException(response.getSubMsg());
             }
         } else {
             log.warn("发起退款失败:{}",response.getMsg());
-            throw new ValidateException("发起退款失败【" + response.getMsg() + "】");
+            throw new BusinessException("发起退款失败【" + response.getMsg() + "】");
         }
         return false;
     }

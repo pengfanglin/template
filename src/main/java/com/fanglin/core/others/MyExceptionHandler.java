@@ -3,16 +3,15 @@ package com.fanglin.core.others;
 import com.mysql.cj.jdbc.exceptions.MysqlDataTruncation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DataIntegrityViolationException;
-import org.springframework.http.HttpStatus;
-import org.springframework.security.access.AccessDeniedException;
 import org.springframework.validation.BindException;
 import org.springframework.validation.FieldError;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
+import org.springframework.web.bind.MissingRequestHeaderException;
 import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 
 /**
  * 全局异常捕获
@@ -34,21 +33,11 @@ public class MyExceptionHandler {
     }
 
     /**
-     * spring security无权限异常
-     */
-    @ExceptionHandler(AccessDeniedException.class)
-    @ResponseStatus(value = HttpStatus.FORBIDDEN)
-    @ResponseBody
-    public Ajax handleAccessDeniedException() {
-        return Ajax.status(403, "无权限");
-    }
-
-    /**
      * 业务异常
      */
-    @ExceptionHandler(ValidateException.class)
+    @ExceptionHandler(BusinessException.class)
     @ResponseBody
-    public Ajax handleValidateException(ValidateException e) {
+    public Ajax handleValidateException(BusinessException e) {
         return Ajax.error(e.getMessage());
     }
 
@@ -126,6 +115,7 @@ public class MyExceptionHandler {
     @ExceptionHandler
     @ResponseBody
     public Ajax handleException(Exception e) {
+        log.warn(e.getMessage());
         //提取错误信息
         String error;
         if (e.getCause() != null) {
@@ -133,9 +123,18 @@ public class MyExceptionHandler {
         } else {
             error = e.getMessage() == null ? "空指针异常" : e.getMessage();
         }
-        //打印堆栈信息
-        e.printStackTrace();
-        log.warn(e.getMessage());
         return Ajax.error(error);
+    }
+
+    @ExceptionHandler
+    @ResponseBody
+    public Ajax exception(MethodArgumentTypeMismatchException e) {
+        return Ajax.error(String.format("方法参数类型不匹配,参数名[%s],类型[%s]", e.getName(), e.getParameter().getParameterType().getSimpleName()));
+    }
+
+    @ExceptionHandler
+    @ResponseBody
+    public Ajax exception(MissingRequestHeaderException e) {
+        return Ajax.error(String.format("请求头缺少参数,参数名[%s],类型[%s]", e.getHeaderName(), e.getParameter().getParameterType().getSimpleName()));
     }
 }

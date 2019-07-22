@@ -15,7 +15,7 @@ import java.util.List;
  * @version 1.0
  * @date 2019/4/3 16:44
  **/
-public interface SystemModuleMapper extends Mapper<ModuleEntity> {
+public interface ModuleMapper extends Mapper<ModuleEntity> {
     /**
      * 系统模块列表
      *

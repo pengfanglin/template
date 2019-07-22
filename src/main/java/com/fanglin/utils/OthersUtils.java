@@ -1,6 +1,7 @@
 package com.fanglin.utils;
 
-import com.fanglin.core.others.ValidateException;
+import com.fanglin.core.others.Ajax;
+import com.fanglin.core.others.BusinessException;
 import com.fanglin.properties.CommonProperties;
 import lombok.extern.slf4j.Slf4j;
 import net.coobird.thumbnailator.Thumbnails;
@@ -60,7 +61,7 @@ public class OthersUtils {
             new ObjectOutputStream(os).writeObject(data);
         } catch (IOException e) {
             log.error("序列化异常:{}", e.getMessage());
-            throw new ValidateException("序列化异常:" + e.getMessage());
+            throw new BusinessException("序列化异常:" + e.getMessage());
         }
         return os.toByteArray();
     }
@@ -77,7 +78,7 @@ public class OthersUtils {
             return new ObjectInputStream(is).readObject();
         } catch (IOException | ClassNotFoundException e) {
             log.error("反序列化异常:{}", e.getMessage());
-            throw new ValidateException("反序列化异常:" + e.getMessage());
+            throw new BusinessException("反序列化异常:" + e.getMessage());
         }
     }
 
@@ -94,7 +95,7 @@ public class OthersUtils {
                 boolean success = pathFile.mkdirs();
                 if (!success) {
                     log.warn("创建目录失败:{}", pathFile.getName());
-                    throw new ValidateException("创建目录失败");
+                    throw new BusinessException("创建目录失败");
                 }
             }
             File file = new File(filePath);
@@ -102,7 +103,7 @@ public class OthersUtils {
                 boolean success = file.createNewFile();
                 if (!success) {
                     log.warn("创建文件失败 目录:{} 文件名:{}", file.getPath(), file.getName());
-                    throw new ValidateException("创建文件失败");
+                    throw new BusinessException("创建文件失败");
                 }
             }
             // 建立文件输出流
@@ -129,7 +130,7 @@ public class OthersUtils {
             return true;
         } catch (Exception e) {
             log.warn("html内容写入异常:{}", e.getMessage());
-            throw new ValidateException("html内容写入异常");
+            throw new BusinessException("html内容写入异常");
         }
     }
 
@@ -166,7 +167,7 @@ public class OthersUtils {
      * @param path  保存根目录
      * @return
      */
-    public static Set<String> uploadFiles(MultipartFile[] files, Boolean small, String path) {
+    public static Ajax uploadFiles(MultipartFile[] files, Boolean small, String path) {
         //图片相对路径数组
         Set<String> fileNames = new HashSet<>();
         //判断file数组不能为空并且长度大于0
@@ -189,7 +190,7 @@ public class OthersUtils {
                         boolean success = file.mkdirs();
                         if (!success) {
                             log.warn("创建文件或目录失败:目录{} 文件名{}", file.getPath(), file.getName());
-                            throw new ValidateException("创建文件或目录失败");
+                            return Ajax.error("创建文件或目录失败");
                         }
                     }
                     String originalFileName = basePath + path + fileName + suffix;
@@ -231,12 +232,12 @@ public class OthersUtils {
                         }
                     } catch (IOException e) {
                         log.warn("文件上传失败:{}", e.getMessage());
-                        throw new ValidateException("文件上传失败:" + e.getMessage());
+                        return Ajax.error("文件上传失败:" + e.getMessage());
                     }
                 }
             }
         }
-        return fileNames;
+        return Ajax.ok(fileNames);
     }
 
     /**
@@ -252,7 +253,7 @@ public class OthersUtils {
                     finalPath = URLDecoder.decode(path, "UTF-8");
                 } catch (UnsupportedEncodingException e) {
                     log.warn("路径参数有误:{}", e.getMessage());
-                    throw new ValidateException("路径参数有误");
+                    throw new BusinessException("路径参数有误");
                 }
             } else {
                 finalPath = path;
@@ -288,7 +289,7 @@ public class OthersUtils {
             }
         } catch (IOException e) {
             log.warn(e.getMessage());
-            throw new ValidateException(e.getMessage());
+            throw new BusinessException(e.getMessage());
         }
         return sb.toString();
     }
@@ -334,7 +335,7 @@ public class OthersUtils {
             doc = documentBuilder.parse(stream);
         } catch (Exception e) {
             log.warn(e.getMessage());
-            throw new ValidateException(e.getMessage());
+            throw new BusinessException(e.getMessage());
         }
         doc.getDocumentElement().normalize();
         NodeList nodeList = doc.getDocumentElement().getChildNodes();
@@ -363,7 +364,7 @@ public class OthersUtils {
             documentBuilder = documentBuilderFactory.newDocumentBuilder();
         } catch (ParserConfigurationException e) {
             log.warn(e.getMessage());
-            throw new ValidateException("解析失败");
+            throw new BusinessException("解析失败");
         }
         Document document = documentBuilder.newDocument();
         Element root = document.createElement("xml");
@@ -381,7 +382,7 @@ public class OthersUtils {
             transformer = tf.newTransformer();
         } catch (TransformerConfigurationException e) {
             log.warn(e.getMessage());
-            throw new ValidateException("解析失败");
+            throw new BusinessException("解析失败");
         }
         DOMSource source = new DOMSource(document);
         transformer.setOutputProperty(OutputKeys.ENCODING, StandardCharsets.UTF_8.name());
@@ -392,7 +393,7 @@ public class OthersUtils {
             transformer.transform(source, result);
         } catch (TransformerException e) {
             log.warn(e.getMessage());
-            throw new ValidateException("解析失败");
+            throw new BusinessException("解析失败");
         }
         String output = writer.getBuffer().toString();
         try {

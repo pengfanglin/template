@@ -15,7 +15,7 @@ import java.util.List;
  * @version 1.0
  * @date 2019/4/3 16:41
  **/
-public interface SystemAccountMapper extends Mapper<AccountEntity> {
+public interface AccountMapper extends Mapper<AccountEntity> {
 
     /**
      * 系统账号列表

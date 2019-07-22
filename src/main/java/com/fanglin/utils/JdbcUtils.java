@@ -1,6 +1,6 @@
 package com.fanglin.utils;
 
-import com.fanglin.core.others.ValidateException;
+import com.fanglin.core.others.BusinessException;
 import lombok.extern.slf4j.Slf4j;
 
 import java.sql.*;
@@ -24,7 +24,7 @@ public class JdbcUtils {
             con = DriverManager.getConnection(url, username, password);
         } catch (SQLException | ClassNotFoundException e) {
             log.warn(e.getMessage());
-            throw new ValidateException(e.getMessage());
+            throw new BusinessException(e.getMessage());
         }
     }
 
@@ -51,7 +51,7 @@ public class JdbcUtils {
             }
         } catch (SQLException e) {
             log.warn(e.getMessage());
-            throw new ValidateException(e.getMessage());
+            throw new BusinessException(e.getMessage());
         }
     }
 }

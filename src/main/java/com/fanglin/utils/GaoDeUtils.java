@@ -2,7 +2,7 @@ package com.fanglin.utils;
 
 
 import com.fanglin.core.others.Location;
-import com.fanglin.core.others.ValidateException;
+import com.fanglin.core.others.BusinessException;
 import com.fanglin.properties.GaoDeMapProperties;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -53,7 +53,7 @@ public class GaoDeUtils {
             }
         } catch (Exception e) {
             log.warn("地址转换经纬度失败:{}", e.getMessage());
-            throw new ValidateException("地址转换经纬度失败:" + e.getMessage());
+            throw new BusinessException("地址转换经纬度失败:" + e.getMessage());
         }
         return locationBean;
     }

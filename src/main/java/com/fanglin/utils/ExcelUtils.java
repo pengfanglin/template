@@ -2,7 +2,7 @@ package com.fanglin.utils;
 
 
 import com.fanglin.core.others.Excel;
-import com.fanglin.core.others.ValidateException;
+import com.fanglin.core.others.BusinessException;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.poi.hssf.usermodel.*;
 import org.apache.poi.poifs.filesystem.POIFSFileSystem;
@@ -60,7 +60,7 @@ public class ExcelUtils {
             }
         } catch (Exception e) {
             log.warn(e.getMessage());
-            throw new ValidateException("excel读取失败:" + e.getMessage());
+            throw new BusinessException("excel读取失败:" + e.getMessage());
         }
         return mapList;
     }
@@ -153,7 +153,7 @@ public class ExcelUtils {
             wb.write(response.getOutputStream());
         } catch (Exception e) {
             log.warn("excel导出失败:{}",e.getMessage());
-            throw new ValidateException("excel导出失败");
+            throw new BusinessException("excel导出失败");
         }
     }
 }

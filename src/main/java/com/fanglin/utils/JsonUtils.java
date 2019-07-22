@@ -1,6 +1,6 @@
 package com.fanglin.utils;
 
-import com.fanglin.core.others.ValidateException;
+import com.fanglin.core.others.BusinessException;
 import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
@@ -34,7 +34,7 @@ public class JsonUtils {
 			return objectMapper.readValue(json, javaType);
 		} catch (IOException e) {
 			log.warn(e.getMessage());
-			throw new ValidateException("JSON序列化异常");
+			throw new BusinessException("JSON序列化异常");
 		}
 	}
 
@@ -46,7 +46,7 @@ public class JsonUtils {
 			return objectMapper.readValue(json, elementClass);
 		} catch (IOException e) {
 			log.warn(e.getMessage());
-			throw new ValidateException("JSON序列化异常");
+			throw new BusinessException("JSON序列化异常");
 		}
 	}
 	/**
@@ -57,7 +57,7 @@ public class JsonUtils {
 			return objectMapper.writeValueAsString(object);
 		} catch (IOException e) {
 			log.warn(e.getMessage());
-			throw new ValidateException("JSON序列化异常");
+			throw new BusinessException("JSON序列化异常");
 		}
 	}
 }

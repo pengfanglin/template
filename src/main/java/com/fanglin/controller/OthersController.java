@@ -24,7 +24,7 @@ import org.springframework.web.multipart.MultipartFile;
  **/
 @RestController
 @RequestMapping("/others/")
-@Api(value = "/common/", tags = {"app", "基本服务"})
+@Api(value = "/common/", tags = {"基本服务"})
 public class OthersController {
 
     @Autowired
@@ -40,7 +40,7 @@ public class OthersController {
     })
     @PostMapping("uploadFiles")
     public Ajax uploadFiles(@RequestParam("file") MultipartFile[] files, Boolean small, String path) {
-        return Ajax.ok(OthersUtils.uploadFiles(files, small, path));
+        return OthersUtils.uploadFiles(files, small, path);
     }
 
     @ApiOperation("发送验证码")
