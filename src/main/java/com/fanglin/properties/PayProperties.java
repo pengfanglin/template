@@ -1,8 +1,6 @@
 package com.fanglin.properties;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;
 
@@ -13,7 +11,8 @@ import org.springframework.stereotype.Component;
  * @version 1.0
  * @date 2019/4/2 14:30
  **/
-@Data
+@Setter
+@Getter
 @NoArgsConstructor
 @AllArgsConstructor
 @ConfigurationProperties(prefix = "pay")
@@ -28,7 +27,8 @@ public class PayProperties {
      */
     private WxProperties wx;
 
-    @Data
+    @Setter
+    @Getter
     public static class AlipayProperties {
         /**
          * 应用id
@@ -40,7 +40,8 @@ public class PayProperties {
         private String secret;
     }
 
-    @Data
+    @Setter
+    @Getter
     public static class WxProperties {
         /**
          * 应用id
@@ -60,7 +61,8 @@ public class PayProperties {
         private HttpClientProperties httpClient;
     }
 
-    @Data
+    @Setter
+    @Getter
     public static class HttpClientProperties {
         /**
          * 从连接池获取到连接的超时时间

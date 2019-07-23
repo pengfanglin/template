@@ -2,9 +2,7 @@ package com.fanglin.core.aop;
 
 import com.fanglin.annotation.LocalCache;
 import com.fanglin.annotation.LocalCacheRemove;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.*;
@@ -135,7 +133,8 @@ public class LocalCacheAop {
         }
     }
 
-    @Data
+    @Setter
+    @Getter
     @AllArgsConstructor
     @NoArgsConstructor
     class CacheData {

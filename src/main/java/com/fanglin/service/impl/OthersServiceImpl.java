@@ -37,9 +37,9 @@ public class OthersServiceImpl implements OthersService {
             int time = 0;
             while (true) {
                 time++;
-                String code = OthersUtils.createRandom(4);
+                int code = OthersUtils.random(4);
                 if (jedis.get(mobile) == null) {
-                    SmsUtils.zhuTong(mobile, code);
+                    SmsUtils.zhuTong(mobile, String.valueOf(code));
                     jedis.set(String.format("code:%s_%s", mobile, code), "", "ex", 60);
                     return Ajax.ok(code);
                 }

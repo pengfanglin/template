@@ -4,6 +4,8 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.Setter;
 import lombok.experimental.Accessors;
 import tk.mybatis.mapper.annotation.KeySql;
 
@@ -19,7 +21,8 @@ import java.util.Date;
  * @author 彭方林
  * @date 2019-04-24
  */
-@Data
+@Setter
+@Getter
 @EqualsAndHashCode(callSuper = false)
 @Accessors(chain = true)
 @Table(name = "pay_history")

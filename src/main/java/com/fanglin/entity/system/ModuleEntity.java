@@ -1,6 +1,8 @@
 package com.fanglin.entity.system;
 
 import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 import lombok.experimental.Accessors;
 import tk.mybatis.mapper.annotation.KeySql;
 
@@ -18,7 +20,8 @@ import java.util.List;
  * @version 1.0
  * @date 2019/4/3 16:43
  **/
-@Data
+@Setter
+@Getter
 @Accessors(chain = true)
 @Table(name = "system_module")
 public class ModuleEntity implements Cloneable, Serializable {

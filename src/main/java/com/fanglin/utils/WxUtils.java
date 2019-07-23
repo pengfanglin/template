@@ -56,12 +56,12 @@ public class WxUtils {
             params.put("type", JS_API_TICKET_TYPE);
             String result = HttpUtils.get(JS_API_TICKET_URL, params);
             Wx wx = JsonUtils.jsonToObject(result, Wx.class);
-            if (wx.getErrcode() == 0) {
+            if (wx.getErrCode() == 0) {
                 jsApiTicket = wx.getTicket();
                 jedis.set("wx_access_token", jsApiTicket, "NX", "EX", 7000);
             } else {
-                log.warn("微信jsApiTicket获取失败:{} {}", wx.getErrcode(), wx.getErrmsg());
-                throw new BusinessException("微信jsApiTicket获取失败:" + wx.getErrcode() + " " + wx.getErrmsg());
+                log.warn("微信jsApiTicket获取失败:{} {}", wx.getErrCode(), wx.getErrMsg());
+                throw new BusinessException("微信jsApiTicket获取失败:" + wx.getErrCode() + " " + wx.getErrMsg());
             }
         }
         jedis.close();
@@ -83,12 +83,12 @@ public class WxUtils {
             params.put("grant_type", ACCESS_TOKEN_GRANT_TYPE);
             String result = HttpUtils.get(ACCESS_TOKEN, params);
             Wx wx = JsonUtils.jsonToObject(result, Wx.class);
-            if (wx.getAccess_token() != null) {
-                accessToken = wx.getAccess_token();
+            if (wx.getAccessToken() != null) {
+                accessToken = wx.getAccessToken();
                 jedis.set("wx_access_token", accessToken, "NX", "EX", 7000);
             } else {
-                log.warn("微信jsApiTicket获取失败:{} {}", wx.getErrcode(), wx.getErrmsg());
-                throw new BusinessException("微信jsApiTicket获取失败:" + wx.getErrcode() + " " + wx.getErrmsg());
+                log.warn("微信jsApiTicket获取失败:{} {}", wx.getErrCode(), wx.getErrMsg());
+                throw new BusinessException("微信jsApiTicket获取失败:" + wx.getErrCode() + " " + wx.getErrMsg());
             }
         }
         jedis.close();
@@ -109,7 +109,7 @@ public class WxUtils {
         params.put("grant_type", ACCESS_TOKEN_BY_CODE_GRANT_TYPE);
         String str = HttpUtils.post(ACCESS_TOKEN_BY_CODE_URL, params);
         Wx wxBean = JsonUtils.jsonToObject(str, Wx.class);
-        return getUserInfoByOpenId(wxBean.getAccess_token(), wxBean.getOpenid());
+        return getUserInfoByOpenId(wxBean.getAccessToken(), wxBean.getOpenid());
     }
 
     /**
@@ -126,11 +126,11 @@ public class WxUtils {
         params.put("lang", LANG);
         String result = HttpUtils.post(USER_INFO_URL, params);
         Wx wx = JsonUtils.jsonToObject(result, Wx.class);
-        if (wx.getErrcode() == 0) {
+        if (wx.getErrCode() == 0) {
             return wx;
         } else {
-            log.warn("用户信息获取失败:{} {}", wx.getErrcode(), wx.getErrmsg());
-            throw new BusinessException("用户信息获取失败:" + wx.getErrcode() + " " + wx.getErrmsg());
+            log.warn("用户信息获取失败:{} {}", wx.getErrCode(), wx.getErrMsg());
+            throw new BusinessException("用户信息获取失败:" + wx.getErrCode() + " " + wx.getErrMsg());
         }
     }
 
@@ -143,7 +143,7 @@ public class WxUtils {
     public static Wx getWXAuthorization(String url) {
         String accessToken = getAccessToken();
         String jsApiTicket = getJsApiTicket(accessToken);
-        String nonceStr = OthersUtils.createRandom(16);
+        String nonceStr = String.valueOf(OthersUtils.random(16));
         long timestamp = Long.parseLong(String.valueOf(System.currentTimeMillis()).substring(0, 10));
         Wx wx = new Wx()
             .setTicket(jsApiTicket)

@@ -1,6 +1,8 @@
 package com.fanglin.core.others;
 
 import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 import lombok.experimental.Accessors;
 
 /**
@@ -9,7 +11,8 @@ import lombok.experimental.Accessors;
  * @author 彭方林
  * @date 2018年4月2日
  */
-@Data
+@Setter
+@Getter
 @Accessors(chain = true)
 public class Ajax<T> {
     /**

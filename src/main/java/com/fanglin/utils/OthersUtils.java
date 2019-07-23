@@ -411,8 +411,10 @@ public class OthersUtils {
      */
     public static int random(int length) {
         Assert.isTrue(length > 0 && length < 9, "长度范围(1-8)");
+        int start = (int) Math.pow(10, length - 1);
+        int end = (int) Math.pow(10, length);
         ThreadLocalRandom random = ThreadLocalRandom.current();
-        return random.nextInt(10 * length);
+        return random.nextInt(start, end);
     }
 
     /**

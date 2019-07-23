@@ -147,7 +147,7 @@ public class SmsUtils {
         if (OthersUtils.isEmpty(templateId)) {
             throw new BusinessException("短信模板ID不能为空");
         }
-        String random = OthersUtils.createRandom(6);
+        int random = OthersUtils.random(6);
         long time = System.currentTimeMillis() / 1000;
         StringBuilder sb = new StringBuilder();
         sb.append("appkey=")

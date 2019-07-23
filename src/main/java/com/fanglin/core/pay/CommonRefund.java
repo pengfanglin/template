@@ -6,6 +6,8 @@ import com.fanglin.enums.pay.PayCreatorTypeEnum;
 import com.fanglin.enums.pay.PayNotifyEnum;
 import com.fanglin.enums.pay.PayWayEnum;
 import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 import lombok.experimental.Accessors;
 
 import java.math.BigDecimal;
@@ -18,7 +20,8 @@ import java.util.Map;
  * @version 1.0
  * @date 2019/4/10 19:54
  **/
-@Data
+@Setter
+@Getter
 @Accessors(chain = true)
 public class CommonRefund {
     /**

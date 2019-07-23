@@ -1,6 +1,9 @@
 package com.fanglin.core.others;
 
-import lombok.Data;
+import com.fasterxml.jackson.annotation.JsonAutoDetect;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import lombok.Getter;
+import lombok.Setter;
 import lombok.experimental.Accessors;
 
 /**
@@ -10,8 +13,10 @@ import lombok.experimental.Accessors;
  * @version 1.0
  * @date 2019/4/2 14:32
  **/
-@Data
+@Setter
+@Getter
 @Accessors(chain = true)
+@JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.ANY, getterVisibility = JsonAutoDetect.Visibility.NONE)
 public class Wx {
     /**
      * 应用id
@@ -40,15 +45,18 @@ public class Wx {
     /**
      * 公众号接口授权凭据
      */
-    private String access_token;
+    @JsonProperty("access_token")
+    private String accessToken;
     /**
      * 凭证有效时间，单位：秒
      */
-    private int expires_in;
+    @JsonProperty("expires_in")
+    private int expiresIn;
     /**
      * 用户刷新access_token
      */
-    private String refresh_token;
+    @JsonProperty("refresh_token")
+    private String refreshToken;
     /**
      * 用户openid
      */
@@ -60,15 +68,18 @@ public class Wx {
     /**
      * 错误码
      */
-    private Integer errcode;
+    @JsonProperty("errcode")
+    private Integer errCode;
     /**
      * 错误信息
      */
-    private String errmsg;
+    @JsonProperty("errmsg")
+    private String errMsg;
     /**
      * 头像
      */
-    private String headimgurl;
+    @JsonProperty("headimgurl")
+    private String headImgUrl;
     /**
      * 昵称
      */
@@ -76,7 +87,8 @@ public class Wx {
     /**
      * 用户二维码
      */
-    private String erweima;
+    @JsonProperty("erweima")
+    private String qrCode;
     /**
      * 网页授权码
      */

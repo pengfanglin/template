@@ -3,6 +3,8 @@ package com.fanglin.model.system;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 import lombok.experimental.Accessors;
 
 import java.util.Date;
@@ -14,7 +16,8 @@ import java.util.Date;
  * @version 1.0
  * @date 2019/4/3 16:38
  **/
-@Data
+@Setter
+@Getter
 @Accessors(chain = true)
 @ApiModel(value = "角色")
 public class RoleModel {

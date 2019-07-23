@@ -4,6 +4,8 @@ import com.fanglin.enums.pay.PayBusinessTypeEnum;
 import com.fanglin.enums.pay.PayCreatorTypeEnum;
 import com.fanglin.enums.pay.PayWayEnum;
 import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 import lombok.experimental.Accessors;
 
 import java.math.BigDecimal;
@@ -16,7 +18,8 @@ import java.util.Map;
  * @version 1.0
  * @date 2019/4/24 15:10
  **/
-@Data
+@Setter
+@Getter
 @Accessors(chain = true)
 public class CommonPay {
     /**
