@@ -10,6 +10,7 @@ mybatis:
   configuration:
     map-underscore-to-camel-case: true
     log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+    default-enum-type-handler: com.fanglin.core.enums.CodeEnumTypeHandler
 mapper:
   before: true
   safe-delete: true
