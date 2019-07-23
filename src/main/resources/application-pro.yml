@@ -10,6 +10,13 @@ mybatis:
   configuration:
     map-underscore-to-camel-case: true
     log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+mapper:
+  before: true
+  safe-delete: true
+  safe-update: true
+  enum-as-simple-type: false
+pagehelper:
+  offset-as-page-num: true
 spring:
   jmx:
     enabled: false
@@ -28,19 +35,6 @@ spring:
       maximum-pool-size: 2000
       pool-name: hikariCP
       connection-timeout: 10000
-  redis:
-    host: 172.17.0.1
-    port: 6379
-    database: 0
-    password: 123456
-  session:
-    #spring session采用的数据源类型
-    store-type: redis
-    redis:
-      #配置session在redis里的命名空间
-      namespace: security_session
-      #配置session的保存触发方式
-      flush-mode: on_save
 common:
   jedis: true
   #静态资源默认保存根路径

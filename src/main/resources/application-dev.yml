@@ -11,6 +11,13 @@ mybatis:
     map-underscore-to-camel-case: true
     log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
     default-enum-type-handler: com.fanglin.core.enums.CodeEnumTypeHandler
+mapper:
+  before: true
+  safe-delete: true
+  safe-update: true
+  enum-as-simple-type: false
+pagehelper:
+  offset-as-page-num: true
 spring:
   jmx:
     enabled: false
