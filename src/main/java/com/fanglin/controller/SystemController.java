@@ -166,5 +166,4 @@ public class SystemController extends BaseController {
     public Ajax<PageResult<RoleModel>> getRoleList(Page page) {
         return Ajax.ok(systemService.getRoleList(page));
     }
-
 }

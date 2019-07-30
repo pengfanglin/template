@@ -1,6 +1,7 @@
 package com.fanglin.config;
 
 import com.fanglin.core.filter.RequestLogFilter;
+import com.fanglin.properties.CommonProperties;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
@@ -26,12 +27,18 @@ public class FilterConfig {
      * 打印请求日志
      */
     @Bean
-    @SuppressWarnings({"rawtypes", "unchecked"})
-    @ConditionalOnProperty(prefix = "common", name = "requestLog", havingValue = "true")
-    public FilterRegistrationBean filterRegister() {
-        log.info("请求日志打印开启成功");
-        FilterRegistrationBean filterRegistrationBean = new FilterRegistrationBean();
-        filterRegistrationBean.setFilter(new RequestLogFilter());
+    @ConditionalOnProperty(prefix = "common.log", name = "enable", havingValue = "true")
+    public FilterRegistrationBean filterRegister(RequestLogFilter requestLogFilter, CommonProperties commonProperties) {
+        CommonProperties.LogProperties.RequestProperties requestProperties = commonProperties.getLog().getRequest();
+        CommonProperties.LogProperties.ResponseProperties responseProperties = commonProperties.getLog().getResponse();
+        if (requestProperties.isEnable()) {
+            log.info("请求参数日志打印开启成功,日志级别:{}", requestProperties.getLevel());
+        }
+        if (responseProperties.isEnable()) {
+            log.info("返回结果日志打印开启成功,日志级别:{}", responseProperties.getLevel());
+        }
+        FilterRegistrationBean<RequestLogFilter> filterRegistrationBean = new FilterRegistrationBean<>();
+        filterRegistrationBean.setFilter(requestLogFilter);
         filterRegistrationBean.addUrlPatterns("/*");
         return filterRegistrationBean;
     }
