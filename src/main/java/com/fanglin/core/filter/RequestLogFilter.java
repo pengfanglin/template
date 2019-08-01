@@ -43,6 +43,7 @@ public class RequestLogFilter implements Filter {
         if (requestProperties.isEnable() && !responseProperties.getLevel().equals(LogLevel.OFF)) {
             RequestWrapper requestWrapper = null;
             Map<String, Object> requestParams = OthersUtils.readRequestParams(req);
+            //请求类型为json时，要从body中读取数据
             if (request.getContentType().equals(ContentType.APPLICATION_JSON.getMimeType())) {
                 requestWrapper = new RequestWrapper(req);
                 String json = getRequestJsonString(requestWrapper);
@@ -52,6 +53,7 @@ public class RequestLogFilter implements Filter {
                     requestParams.put("json", jsonNode);
                 }
             }
+            requestParams.put("headers", OthersUtils.readRequestHeaders(req));
             String requestLog = objectMapper.writeValueAsString(requestParams);
             printLog(true, requestProperties.getLevel(), requestLog);
             if (responseProperties.isEnable() && !responseProperties.getLevel().equals(LogLevel.OFF)) {
