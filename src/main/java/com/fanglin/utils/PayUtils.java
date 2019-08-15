@@ -125,7 +125,7 @@ public class PayUtils {
         if (commonPay.getExtraData() != null) {
             payHistory.setExtraData(JsonUtils.objectToJson(commonPay.getExtraData()));
         }
-        mapperFactory.payHistoryMapper.insertSelective(payHistory);
+        mapperFactory.payHistory.insertSelective(payHistory);
         commonPay.setHistoryId(payHistory.getHistoryId());
     }
 
@@ -145,7 +145,7 @@ public class PayUtils {
         if (commonRefund.getExtraData() != null) {
             refundHistory.setExtraData(JsonUtils.objectToJson(commonRefund.getExtraData()));
         }
-        mapperFactory.refundHistoryMapper.insertSelective(refundHistory);
+        mapperFactory.refundHistory.insertSelective(refundHistory);
         commonRefund.setHistoryId(refundHistory.getHistoryId());
     }
 

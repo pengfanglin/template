@@ -45,13 +45,13 @@ public class PayServiceImpl implements PayService {
         if (commonPay.getHistoryId() == null) {
             throw new BusinessException("支付记录id不能为空");
         }
-        PayHistoryEntity payHistory = mapperFactory.payHistoryMapper.selectByPrimaryKey(commonPay.getHistoryId());
+        PayHistoryEntity payHistory = mapperFactory.payHistory.selectByPrimaryKey(commonPay.getHistoryId());
         Assert.notNull(payHistory, "支付记录不存在");
         if (payHistory.getPayAmount().compareTo(commonPay.getPayAmount()) != 0) {
             throw new BusinessException(String.format("支付金额有误,预期支付:%s,实际支付:%s", payHistory.getPayAmount().toString(), commonPay.getPayAmount().toString()));
         }
         //支付记录设为已支付
-        mapperFactory.payHistoryMapper.updateByPrimaryKeySelective(new PayHistoryEntity().setHistoryId(payHistory.getHistoryId()).setState(1).setTradeNo(commonPay.getTradeNo()));
+        mapperFactory.payHistory.updateByPrimaryKeySelective(new PayHistoryEntity().setHistoryId(payHistory.getHistoryId()).setState(1).setTradeNo(commonPay.getTradeNo()));
         PayBusinessTypeEnum payBusinessType = PayBusinessTypeEnum.find(payHistory.getPayBusinessType());
         Assert.notNull(payBusinessType, "业务类型不存在");
         switch (payBusinessType) {
@@ -67,19 +67,19 @@ public class PayServiceImpl implements PayService {
      */
     @Override
     public boolean refundSuccessHandler(CommonRefund commonRefund) {
-        RefundHistoryEntity refundHistory = mapperFactory.refundHistoryMapper.selectOne(new RefundHistoryEntity().setOrderNo(commonRefund.getRefundNo()));
+        RefundHistoryEntity refundHistory = mapperFactory.refundHistory.selectOne(new RefundHistoryEntity().setOrderNo(commonRefund.getRefundNo()));
         Assert.notNull(refundHistory, "退款记录不存在");
         if (refundHistory.getRefundAmount().compareTo(commonRefund.getRefundAmount()) != 0) {
             throw new BusinessException(String.format("退款金额有误,预期退款:%s,实际退款:%s", refundHistory.getRefundAmount().toString(), commonRefund.getRefundAmount().toString()));
         }
         //支付记录设为已支付
-        mapperFactory.refundHistoryMapper.updateByPrimaryKeySelective(
+        mapperFactory.refundHistory.updateByPrimaryKeySelective(
             new RefundHistoryEntity()
                 .setHistoryId(commonRefund.getHistoryId())
                 .setState(1)
                 .setTradeNo(commonRefund.getTradeNo())
         );
-        mapperFactory.payHistoryMapper.addRefundAmount(refundHistory.getPayId(), commonRefund.getRefundAmount().setScale(2, RoundingMode.DOWN).toString());
+        mapperFactory.payHistory.addRefundAmount(refundHistory.getPayId(), commonRefund.getRefundAmount().setScale(2, RoundingMode.DOWN).toString());
         PayBusinessTypeEnum payBusinessType = PayBusinessTypeEnum.find(refundHistory.getPayBusinessType());
         Assert.notNull(payBusinessType, "业务类型不存在");
         switch (payBusinessType) {

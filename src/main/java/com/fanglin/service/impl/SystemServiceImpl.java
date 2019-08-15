@@ -43,73 +43,73 @@ public class SystemServiceImpl implements SystemService {
     @RedisCache(value = "system_module_tree", timeout = 1, unit = TimeUnit.HOURS)
     @Override
     public List<ModuleTreeModel> getSystemModuleTree() {
-        return mapperFactory.othersMapper.getSystemModuleTree(null);
+        return mapperFactory.others.getSystemModuleTree(null);
     }
 
     @Override
     public List<ModuleTreeModel> getLeftMenuTree(Integer accountId) {
-        return mapperFactory.othersMapper.getSystemModuleTree(accountId);
+        return mapperFactory.others.getSystemModuleTree(accountId);
     }
 
     @Override
     public PageResult<ModuleModel> getSystemModuleList(ModuleModel module, Page page) {
-        return new PageResult<>(mapperFactory.moduleMapper.getSystemModuleList(module, page), page.getTotal());
+        return new PageResult<>(mapperFactory.module.getSystemModuleList(module, page), page.getTotal());
     }
 
     @RedisCacheRemove(value = "system_module_tree")
     @Override
     public void insertSystemModule(ModuleModel module) {
-        Assert.isNull(mapperFactory.moduleMapper.selectOne(new ModuleEntity().setModuleUrl(module.getModuleUrl())), "路由重复");
-        mapperFactory.moduleMapper.insertSelective(BeanUtils.copy(module, ModuleEntity.class));
+        Assert.isNull(mapperFactory.module.selectOne(new ModuleEntity().setModuleUrl(module.getModuleUrl())), "路由重复");
+        mapperFactory.module.insertSelective(BeanUtils.copy(module, ModuleEntity.class));
     }
 
     @RedisCacheRemove(value = "system_module_tree")
     @Override
     public void deleteSystemModule(Integer moduleId) {
-        mapperFactory.moduleMapper.deleteByPrimaryKey(moduleId);
+        mapperFactory.module.deleteByPrimaryKey(moduleId);
     }
 
     @RedisCacheRemove(value = "system_module_tree")
     @Override
     public void updateSystemModule(ModuleModel module) {
-        ModuleEntity systemModule1 = mapperFactory.moduleMapper.selectOne(new ModuleEntity().setModuleUrl(module.getModuleUrl()));
+        ModuleEntity systemModule1 = mapperFactory.module.selectOne(new ModuleEntity().setModuleUrl(module.getModuleUrl()));
         Assert.isTrue(systemModule1 != null && !systemModule1.getModuleId().equals(module.getModuleId()), "路由重复");
-        mapperFactory.moduleMapper.updateByPrimaryKeySelective(BeanUtils.copy(module, ModuleEntity.class));
+        mapperFactory.module.updateByPrimaryKeySelective(BeanUtils.copy(module, ModuleEntity.class));
     }
 
     @Override
     public ModuleModel getSystemModuleDetail(Integer moduleId) {
-        return BeanUtils.copy(mapperFactory.moduleMapper.selectByPrimaryKey(moduleId), ModuleModel.class);
+        return BeanUtils.copy(mapperFactory.module.selectByPrimaryKey(moduleId), ModuleModel.class);
     }
 
     @Override
     public PageResult<RoleModel> getRoleList(Page page) {
-        return new PageResult<>(mapperFactory.roleMapper.getRoleList(page), page.getTotal());
+        return new PageResult<>(mapperFactory.role.getRoleList(page), page.getTotal());
     }
 
     @Override
     public RoleModel getRoleDetail(Integer roleId) {
-        return BeanUtils.copy(mapperFactory.roleMapper.selectByPrimaryKey(roleId), RoleModel.class);
+        return BeanUtils.copy(mapperFactory.role.selectByPrimaryKey(roleId), RoleModel.class);
     }
 
     @Override
     public void updateRole(RoleModel role) {
-        mapperFactory.roleMapper.updateByPrimaryKeySelective(BeanUtils.copy(role, RoleEntity.class));
+        mapperFactory.role.updateByPrimaryKeySelective(BeanUtils.copy(role, RoleEntity.class));
     }
 
     @Override
     public void deleteRole(Integer roleId) {
-        mapperFactory.roleMapper.deleteByPrimaryKey(roleId);
+        mapperFactory.role.deleteByPrimaryKey(roleId);
     }
 
     @Override
     public void insertRole(RoleModel role) {
-        mapperFactory.roleMapper.insertSelective(BeanUtils.copy(role, RoleEntity.class));
+        mapperFactory.role.insertSelective(BeanUtils.copy(role, RoleEntity.class));
     }
 
     @Override
     public AccountModel getSystemAccountDetail(Integer accountId) {
-        AccountEntity systemAccount1 = mapperFactory.accountMapper.selectByPrimaryKey(accountId);
+        AccountEntity systemAccount1 = mapperFactory.account.selectByPrimaryKey(accountId);
         if (systemAccount1 != null) {
             systemAccount1.setPassword(null);
         }
@@ -118,7 +118,7 @@ public class SystemServiceImpl implements SystemService {
 
     @Override
     public PageResult<AccountModel> getSystemAccountList(String username, String isDisable, Page page) {
-        List<AccountModel> accounts = mapperFactory.accountMapper.getSystemAccountList(username, isDisable, page);
+        List<AccountModel> accounts = mapperFactory.account.getSystemAccountList(username, isDisable, page);
         accounts.forEach(item -> {
             item.setPassword(null);
         });
@@ -127,22 +127,22 @@ public class SystemServiceImpl implements SystemService {
 
     @Override
     public void updateSystemAccount(AccountModel systemAccount) {
-        AccountEntity systemAccount1 = mapperFactory.accountMapper.selectOne(new AccountEntity().setUsername(systemAccount.getUsername()));
+        AccountEntity systemAccount1 = mapperFactory.account.selectOne(new AccountEntity().setUsername(systemAccount.getUsername()));
         Assert.isTrue(systemAccount1 != null && !systemAccount1.getAccountId().equals(systemAccount.getAccountId()), "账号已存在");
-        mapperFactory.accountMapper.updateByPrimaryKeySelective(BeanUtils.copy(systemAccount, AccountEntity.class));
+        mapperFactory.account.updateByPrimaryKeySelective(BeanUtils.copy(systemAccount, AccountEntity.class));
     }
 
     @Override
     public void insertSystemAccount(AccountModel systemAccount) {
-        Assert.isTrue(mapperFactory.accountMapper.select(new AccountEntity().setUsername(systemAccount.getUsername())).size() > 0, "账号已存在");
+        Assert.isTrue(mapperFactory.account.select(new AccountEntity().setUsername(systemAccount.getUsername())).size() > 0, "账号已存在");
         if (OthersUtils.notEmpty(systemAccount.getPassword())) {
             systemAccount.setPassword(EncodeUtils.md5Encode(systemAccount.getPassword()));
         }
-        mapperFactory.accountMapper.insertSelective(BeanUtils.copy(systemAccount, AccountEntity.class));
+        mapperFactory.account.insertSelective(BeanUtils.copy(systemAccount, AccountEntity.class));
     }
 
     @Override
     public void deleteSystemAccount(Integer id) {
-        Assert.isTrue(mapperFactory.accountMapper.deleteByPrimaryKey(id) > 0, "删除失败");
+        Assert.isTrue(mapperFactory.account.deleteByPrimaryKey(id) > 0, "删除失败");
     }
 }

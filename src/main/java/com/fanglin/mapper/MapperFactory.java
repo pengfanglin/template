@@ -16,30 +16,30 @@ public class MapperFactory {
      * 其他
      */
     @Autowired
-    public OthersMapper othersMapper;
+    public OthersMapper others;
     /**
      * 账号
      */
     @Autowired
-    public AccountMapper accountMapper;
+    public AccountMapper account;
     /**
      * 模块
      */
     @Autowired
-    public ModuleMapper moduleMapper;
+    public ModuleMapper module;
     /**
      * 角色
      */
     @Autowired
-    public RoleMapper roleMapper;
+    public RoleMapper role;
     /**
      * 支付记录
      **/
     @Autowired
-    public PayHistoryMapper payHistoryMapper;
+    public PayHistoryMapper payHistory;
     /**
      * 退款记录
      **/
     @Autowired
-    public RefundHistoryMapper refundHistoryMapper;
+    public RefundHistoryMapper refundHistory;
 }
