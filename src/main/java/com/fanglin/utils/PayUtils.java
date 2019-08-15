@@ -9,8 +9,12 @@ import com.alipay.api.request.AlipayTradeRefundRequest;
 import com.alipay.api.response.AlipayTradeAppPayResponse;
 import com.alipay.api.response.AlipayTradeRefundResponse;
 
-import com.fanglin.core.others.Assert;
-import com.fanglin.core.others.BusinessException;
+import com.fanglin.common.core.others.Assert;
+import com.fanglin.common.core.others.BusinessException;
+import com.fanglin.common.utils.EncodeUtils;
+import com.fanglin.common.utils.HttpUtils;
+import com.fanglin.common.utils.JsonUtils;
+import com.fanglin.common.utils.OthersUtils;
 import com.fanglin.core.pay.CommonPay;
 import com.fanglin.core.pay.CommonRefund;
 import com.fanglin.entity.pay.PayHistoryEntity;
@@ -62,7 +66,7 @@ public class PayUtils {
         PayUtils.payProperties = payProperties;
         PayUtils.alipayClient = alipayClient;
         PayUtils.mapperFactory = mapperFactory;
-        PayUtils.payService=payService;
+        PayUtils.payService = payService;
     }
 
     /**
@@ -124,10 +128,11 @@ public class PayUtils {
         mapperFactory.payHistoryMapper.insertSelective(payHistory);
         commonPay.setHistoryId(payHistory.getHistoryId());
     }
+
     /**
      * 添加本地支付记录
      *
-     * @param commonPay
+     * @param commonRefund
      */
     private static void insertRefundHistory(CommonRefund commonRefund) {
         RefundHistoryEntity refundHistory = new RefundHistoryEntity()
@@ -143,6 +148,7 @@ public class PayUtils {
         mapperFactory.refundHistoryMapper.insertSelective(refundHistory);
         commonRefund.setHistoryId(refundHistory.getHistoryId());
     }
+
     /**
      * 根据退款类型，调用不同的退款接口
      *
@@ -244,8 +250,6 @@ public class PayUtils {
     /**
      * 构建返回结果，并二次签名
      *
-     * @param params
-     * @param key    app秘钥
      * @return
      */
     private static Map<String, Object> buildWxPayResult(Map<String, Object> params) {
@@ -313,11 +317,11 @@ public class PayUtils {
             if ("SUCCESS".equals(returnParam.get("result_code"))) {
                 return true;
             } else {
-                log.warn("微信退款请求失败: {}" ,returnParam.get("err_code_des"));
+                log.warn("微信退款请求失败: {}", returnParam.get("err_code_des"));
                 throw new BusinessException("微信退款请求失败【" + returnParam.get("err_code_des") + "】");
             }
         } else {
-            log.warn("连接微信退款服务失败: {}" ,returnParam.get("return_msg"));
+            log.warn("连接微信退款服务失败: {}", returnParam.get("return_msg"));
             throw new BusinessException("连接微信退款服务失败【" + returnParam.get("return_msg") + "】");
         }
     }
@@ -404,7 +408,7 @@ public class PayUtils {
         //退款单号要保证唯一性
         model.setOutRequestNo(commonRefund.getRefundNo());
         //退款原因
-        if(commonRefund.getRefundReason()!=null){
+        if (commonRefund.getRefundReason() != null) {
             model.setRefundReason(commonRefund.getRefundReason());
         }
         //设置退款参数
@@ -414,7 +418,7 @@ public class PayUtils {
         try {
             response = alipayClient.execute(request);
         } catch (AlipayApiException e) {
-            log.warn("发起退款异常:{}",e.getErrMsg());
+            log.warn("发起退款异常:{}", e.getErrMsg());
             throw new BusinessException("发起退款异常");
         }
         //发起退款成功
@@ -432,7 +436,7 @@ public class PayUtils {
                 throw new BusinessException(response.getSubMsg());
             }
         } else {
-            log.warn("发起退款失败:{}",response.getMsg());
+            log.warn("发起退款失败:{}", response.getMsg());
             throw new BusinessException("发起退款失败【" + response.getMsg() + "】");
         }
         return false;

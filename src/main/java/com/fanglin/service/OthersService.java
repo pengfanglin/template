@@ -1,7 +1,7 @@
 package com.fanglin.service;
 
-import com.fanglin.core.others.Ajax;
 
+import com.fanglin.enums.others.CodeType;
 
 /**
  * @author 彭方林
@@ -10,11 +10,11 @@ import com.fanglin.core.others.Ajax;
  **/
 public interface OthersService {
     /**
-     * 发送验证码
+     * 添加新的验证码
      *
      * @param mobile 手机号
-     * @return
+     * @param type   类型
      */
-    Ajax sendCode(String mobile);
+    void sendCode(String mobile, CodeType type);
 
 }

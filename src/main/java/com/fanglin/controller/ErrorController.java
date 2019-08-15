@@ -1,6 +1,6 @@
 package com.fanglin.controller;
 
-import com.fanglin.core.others.Ajax;
+import com.fanglin.common.core.others.Ajax;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.web.servlet.error.ErrorAttributes;
 import org.springframework.http.MediaType;

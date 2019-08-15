@@ -23,10 +23,9 @@ def jarVersionSuffix = env == "pro" ? "-RELEASE" : "-SNAPSHOT"
 
 ext {
     mapperVersion = '2.1.5'
+    mybatisSpringbootStarterVersion = '2.1.0'
     pagehelperVersion = '1.2.12'
-    poiVersion = '3.17'
     jedisVersion = '2.10.0'
-    thumbnailatorVersion = '0.4.8'
     swaggerVersion = '2.9.2'
     alipayVersion = '3.3.4.ALL'
     mysqlVersion = '8.0.11'
@@ -40,25 +39,25 @@ repositories {
 }
 
 dependencies {
-    compileOnly fileTree(dir: 'lib', includes: ['*jar'])
     annotationProcessor "org.projectlombok:lombok"
     annotationProcessor("org.springframework.boot:spring-boot-configuration-processor")
+    testAnnotationProcessor "org.projectlombok:lombok"
+    testAnnotationProcessor "org.springframework.boot:spring-boot-configuration-processor"
+    testCompileOnly("org.projectlombok:lombok")
+    compileOnly("org.projectlombok:lombok")
+    api("com.fanglin:tk-mapper-generator:1.0.0")
 
-    api(
-            "org.projectlombok:lombok",
-    )
-    implementation("org.apache.poi:poi:${poiVersion}")
-    implementation("org.apache.poi:poi-ooxml:${poiVersion}")
     implementation("io.springfox:springfox-swagger2:${swaggerVersion}")
     implementation("io.springfox:springfox-swagger-ui:${swaggerVersion}")
 
+    implementation("com.fanglin.common:common:1.0.0${jarVersionSuffix}")
     implementation("tk.mybatis:mapper-spring-boot-starter:${mapperVersion}")
+    implementation("org.mybatis.spring.boot:mybatis-spring-boot-starter:${mybatisSpringbootStarterVersion}")
     implementation("com.github.pagehelper:pagehelper-spring-boot-starter:${pagehelperVersion}")
     implementation("org.apache.httpcomponents:httpclient")
     implementation("org.springframework.boot:spring-boot-configuration-processor")
     implementation("redis.clients:jedis:${jedisVersion}")
     implementation("org.springframework.boot:spring-boot-starter-aop")
-    implementation("net.coobird:thumbnailator:${thumbnailatorVersion}")
     implementation("mysql:mysql-connector-java:${mysqlVersion}")
     implementation("org.springframework.boot:spring-boot-starter-undertow") {
         exclude module: 'undertow-websockets-jsr'
@@ -69,8 +68,6 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-web") {
         exclude module: 'spring-boot-starter-tomcat'
     }
-    implementation("org.hibernate.validator:hibernate-validator")
-    implementation("org.glassfish:javax.el")
 }
 
 publishing {
@@ -91,7 +88,7 @@ tasks {
     processResources {
         from("src/main/resources")
         into("$buildDir/resources/main")
-        include("application-" + env + ".yml", "**/*.xml","*.p12")
+        include("application-" + env + ".yml", "**/*.xml", "*.p12")
         rename("application-" + env + ".yml", "application.yml")
     }
 }

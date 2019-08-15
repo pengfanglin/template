@@ -1,7 +1,7 @@
 package com.fanglin.controller;
 
-import com.fanglin.core.page.PageResult;
-import com.fanglin.core.others.Ajax;
+import com.fanglin.common.core.others.Ajax;
+import com.fanglin.common.core.page.PageResult;
 import com.fanglin.core.page.Page;
 import com.fanglin.model.system.AccountModel;
 import com.fanglin.model.system.ModuleModel;

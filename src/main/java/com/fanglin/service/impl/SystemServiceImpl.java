@@ -1,20 +1,22 @@
 package com.fanglin.service.impl;
 
-import com.fanglin.annotation.LocalCache;
-import com.fanglin.annotation.RedisCacheRemove;
-import com.fanglin.core.others.Assert;
+import com.fanglin.common.annotation.RedisCache;
+import com.fanglin.common.annotation.RedisCacheRemove;
+import com.fanglin.common.core.others.Assert;
+import com.fanglin.common.core.page.PageResult;
+import com.fanglin.common.utils.BeanUtils;
+import com.fanglin.common.utils.EncodeUtils;
+import com.fanglin.common.utils.OthersUtils;
 import com.fanglin.entity.system.RoleEntity;
 import com.fanglin.entity.system.AccountEntity;
 import com.fanglin.entity.system.ModuleEntity;
 import com.fanglin.mapper.MapperFactory;
 import com.fanglin.core.page.Page;
-import com.fanglin.core.page.PageResult;
 import com.fanglin.model.system.AccountModel;
 import com.fanglin.model.system.ModuleModel;
 import com.fanglin.model.system.ModuleTreeModel;
 import com.fanglin.model.system.RoleModel;
 import com.fanglin.service.SystemService;
-import com.fanglin.utils.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -38,7 +40,7 @@ public class SystemServiceImpl implements SystemService {
      *
      * @return
      */
-    @LocalCache(value = "systemModuleTree", timeout = 1, unit = TimeUnit.HOURS)
+    @RedisCache(value = "system_module_tree", timeout = 1, unit = TimeUnit.HOURS)
     @Override
     public List<ModuleTreeModel> getSystemModuleTree() {
         return mapperFactory.othersMapper.getSystemModuleTree(null);
@@ -54,20 +56,20 @@ public class SystemServiceImpl implements SystemService {
         return new PageResult<>(mapperFactory.moduleMapper.getSystemModuleList(module, page), page.getTotal());
     }
 
-    @RedisCacheRemove(value = "systemModuleTree")
+    @RedisCacheRemove(value = "system_module_tree")
     @Override
     public void insertSystemModule(ModuleModel module) {
         Assert.isNull(mapperFactory.moduleMapper.selectOne(new ModuleEntity().setModuleUrl(module.getModuleUrl())), "路由重复");
         mapperFactory.moduleMapper.insertSelective(BeanUtils.copy(module, ModuleEntity.class));
     }
 
-    @RedisCacheRemove(value = "systemModuleTree")
+    @RedisCacheRemove(value = "system_module_tree")
     @Override
     public void deleteSystemModule(Integer moduleId) {
         mapperFactory.moduleMapper.deleteByPrimaryKey(moduleId);
     }
 
-    @RedisCacheRemove(value = "systemModuleTree")
+    @RedisCacheRemove(value = "system_module_tree")
     @Override
     public void updateSystemModule(ModuleModel module) {
         ModuleEntity systemModule1 = mapperFactory.moduleMapper.selectOne(new ModuleEntity().setModuleUrl(module.getModuleUrl()));
@@ -133,7 +135,7 @@ public class SystemServiceImpl implements SystemService {
     @Override
     public void insertSystemAccount(AccountModel systemAccount) {
         Assert.isTrue(mapperFactory.accountMapper.select(new AccountEntity().setUsername(systemAccount.getUsername())).size() > 0, "账号已存在");
-        if (!OthersUtils.isEmpty(systemAccount.getPassword())) {
+        if (OthersUtils.notEmpty(systemAccount.getPassword())) {
             systemAccount.setPassword(EncodeUtils.md5Encode(systemAccount.getPassword()));
         }
         mapperFactory.accountMapper.insertSelective(BeanUtils.copy(systemAccount, AccountEntity.class));

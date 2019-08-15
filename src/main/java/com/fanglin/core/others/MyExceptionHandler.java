@@ -1,10 +1,11 @@
 package com.fanglin.core.others;
 
-import com.fanglin.utils.JsonUtils;
-import com.fanglin.utils.OthersUtils;
-import com.mysql.cj.jdbc.exceptions.MysqlDataTruncation;
+import com.fanglin.common.core.others.Ajax;
+import com.fanglin.common.core.others.BusinessException;
+import com.fanglin.common.utils.JsonUtils;
+import com.fanglin.common.utils.OthersUtils;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.http.HttpStatus;
 import org.springframework.validation.BindException;
 import org.springframework.validation.FieldError;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
@@ -13,21 +14,19 @@ import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
-import org.springframework.web.util.ContentCachingRequestWrapper;
 
-import javax.servlet.ServletRequest;
 import javax.servlet.http.HttpServletRequest;
-import java.net.URLDecoder;
-import java.nio.charset.Charset;
-import java.util.*;
+import java.util.Arrays;
+
 
 /**
  * 全局异常捕获
  *
  * @author 彭方林
  * @version 1.0
- * @date 2019/4/3 16:35
+ * @date 2019/4/3 14:16
  **/
 @Slf4j
 @ControllerAdvice
@@ -42,40 +41,25 @@ public class MyExceptionHandler {
     }
 
     /**
+     * 请求方式不支持异常
+     */
+    @ExceptionHandler(HttpRequestMethodNotSupportedException.class)
+    @ResponseStatus(value = HttpStatus.METHOD_NOT_ALLOWED)
+    @ResponseBody
+    public Ajax handleHttpRequestMethodNotSupportedException(HttpRequestMethodNotSupportedException e) {
+        String message = e.getMethod() + "不支持" + (e.getSupportedMethods() == null ? "" : "请使用" + Arrays.toString(e.getSupportedMethods()));
+        return Ajax.status(405, message);
+    }
+
+    /**
      * 业务异常
      */
     @ExceptionHandler(BusinessException.class)
     @ResponseBody
-    public Ajax handleValidateException(BusinessException e) {
-        return Ajax.error(e.getMessage());
+    public Ajax handleBusinessException(BusinessException e) {
+        return Ajax.status(e.getCode(), e.getMessage());
     }
 
-    /**
-     * 数据库异常
-     */
-    @ExceptionHandler(DataIntegrityViolationException.class)
-    @ResponseBody
-    public Ajax handleDataIntegrityViolationException(DataIntegrityViolationException e) {
-        MysqlDataTruncation mysqlDataTruncation = (MysqlDataTruncation) e.getCause();
-        String error;
-        //获取sql状态码
-        String sqlState = mysqlDataTruncation.getSQLState();
-        if ("22001".equals(sqlState)) {
-            error = "长度超出";
-        } else {
-            error = "参数非法";
-        }
-        return Ajax.error(error);
-    }
-
-    /**
-     * 请求方式不支持
-     */
-    @ExceptionHandler(HttpRequestMethodNotSupportedException.class)
-    @ResponseBody
-    public Ajax httpRequestMethodNotSupportedException(HttpRequestMethodNotSupportedException e) {
-        return Ajax.error(e.getMethod() + "不支持");
-    }
 
     /**
      * 业务异常
@@ -124,19 +108,19 @@ public class MyExceptionHandler {
     @ExceptionHandler
     @ResponseBody
     public Ajax handleException(Exception e, HttpServletRequest request) {
-        log.info("异常原因:{},请求参数:\n{}", e.getMessage(), JsonUtils.objectToJson(OthersUtils.readRequestParams(request)));
+        log.warn("异常原因:{},请求参数:\n{}", e.getMessage(), JsonUtils.objectToJson(OthersUtils.readRequestParams(request)));
         return Ajax.error("服务器错误");
     }
 
     @ExceptionHandler
     @ResponseBody
-    public Ajax exception(MethodArgumentTypeMismatchException e) {
+    public Ajax handleException(MethodArgumentTypeMismatchException e) {
         return Ajax.error(String.format("方法参数类型不匹配,参数名[%s],类型[%s]", e.getName(), e.getParameter().getParameterType().getSimpleName()));
     }
 
     @ExceptionHandler
     @ResponseBody
-    public Ajax exception(MissingRequestHeaderException e) {
+    public Ajax handleException(MissingRequestHeaderException e) {
         return Ajax.error(String.format("请求头缺少参数,参数名[%s],类型[%s]", e.getHeaderName(), e.getParameter().getParameterType().getSimpleName()));
     }
 }

@@ -1,9 +1,10 @@
 package com.fanglin.controller;
 
-import com.fanglin.core.others.Ajax;
+import com.fanglin.common.core.others.Ajax;
+import com.fanglin.common.utils.UploadUtils;
+import com.fanglin.enums.others.CodeType;
 import com.fanglin.service.OthersService;
 import com.fanglin.service.SystemService;
-import com.fanglin.utils.*;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
@@ -40,15 +41,17 @@ public class OthersController {
     })
     @PostMapping("uploadFiles")
     public Ajax uploadFiles(@RequestParam("file") MultipartFile[] files, Boolean small, String path) {
-        return OthersUtils.uploadFiles(files, small, path);
+        return UploadUtils.uploadFiles(files, small, path);
     }
 
     @ApiOperation("发送验证码")
     @ApiImplicitParams({
         @ApiImplicitParam(name = "mobile", value = "手机号", required = true),
+        @ApiImplicitParam(name = "type", value = "验证码类型", required = true)
     })
     @PostMapping("sendCode")
-    public Ajax sendCode(@RequestParam String mobile) {
-        return othersService.sendCode(mobile);
+    public Ajax sendCode(@RequestParam String mobile, @RequestParam CodeType type) {
+        othersService.sendCode(mobile, type);
+        return Ajax.ok("发送成功");
     }
 }

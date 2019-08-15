@@ -1,12 +1,15 @@
 package com.fanglin.service.impl;
 
-import com.fanglin.core.others.Ajax;
-import com.fanglin.core.others.BusinessException;
+import com.fanglin.common.core.others.Ajax;
+import com.fanglin.common.core.others.Assert;
+import com.fanglin.common.core.others.BusinessException;
+import com.fanglin.common.utils.JedisUtils;
+import com.fanglin.common.utils.OthersUtils;
+import com.fanglin.common.utils.RegexUtils;
+import com.fanglin.common.utils.SmsUtils;
+import com.fanglin.enums.others.CodeType;
 import com.fanglin.mapper.MapperFactory;
 import com.fanglin.service.OthersService;
-import com.fanglin.utils.OthersUtils;
-import com.fanglin.utils.RegexUtils;
-import com.fanglin.utils.SmsUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import redis.clients.jedis.Jedis;
@@ -25,30 +28,20 @@ public class OthersServiceImpl implements OthersService {
 
     @Autowired
     MapperFactory mapperFactory;
-    @Autowired
-    JedisPool jedisPool;
 
     @Override
-    public Ajax sendCode(String mobile) {
-        if (RegexUtils.checkMobile(mobile)) {
-            return Ajax.error("手机号不合法");
-        }
-        try (Jedis jedis = jedisPool.getResource()) {
-            int time = 0;
-            while (true) {
-                time++;
-                int code = OthersUtils.random(4);
-                if (jedis.get(mobile) == null) {
-                    SmsUtils.zhuTong(mobile, String.valueOf(code));
-                    jedis.set(String.format("code:%s_%s", mobile, code), "", "ex", 60);
-                    return Ajax.ok(code);
-                }
-                if (time > 100) {
-                    return Ajax.error("生成验证码超时，请稍后重试");
-                }
+    public void sendCode(String mobile, CodeType type) {
+        String code = OthersUtils.randomString(4);
+        String content = String.format("验证码为:%s,60秒有效", code);
+        try (Jedis jedis = JedisUtils.getJedis()) {
+            String key = String.format("code:%s:%s", type, mobile);
+            code = jedis.get(key);
+            if (key != null) {
+                long time = jedis.pttl(key);
+                Assert.isTrue(time != -2, "验证码未过期，请" + time + "秒后重试");
             }
-        } catch (Exception e) {
-            throw new BusinessException(e.getMessage());
+            Assert.isTrue(SmsUtils.zhuTong(mobile, content), "验证码发送失败");
+            jedis.set(key, code, "ex", 60);
         }
     }
 

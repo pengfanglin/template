@@ -1,7 +1,7 @@
 package com.fanglin.service;
 
+import com.fanglin.common.core.page.PageResult;
 import com.fanglin.core.page.Page;
-import com.fanglin.core.page.PageResult;
 import com.fanglin.model.system.ModuleModel;
 import com.fanglin.model.system.ModuleTreeModel;
 import com.fanglin.model.system.RoleModel;

@@ -1,16 +1,14 @@
 package com.fanglin.controller;
 
-import com.fanglin.core.others.Ajax;
+import com.fanglin.common.core.others.Ajax;
+import com.fanglin.common.utils.OthersUtils;
+import com.fanglin.common.utils.UUIDUtils;
 import com.fanglin.core.pay.CommonPay;
 import com.fanglin.enums.pay.PayBusinessTypeEnum;
 import com.fanglin.enums.pay.PayCreatorTypeEnum;
 import com.fanglin.enums.pay.PayWayEnum;
-import com.fanglin.properties.PayProperties;
 import com.fanglin.service.PayService;
-import com.fanglin.utils.LogUtils;
-import com.fanglin.utils.OthersUtils;
 import com.fanglin.utils.PayUtils;
-import com.fanglin.utils.UUIDUtils;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;

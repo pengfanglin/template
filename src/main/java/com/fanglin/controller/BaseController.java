@@ -1,6 +1,6 @@
 package com.fanglin.controller;
 
-import com.fanglin.utils.TimeUtils;
+import com.fanglin.common.utils.TimeUtils;
 import org.springframework.beans.propertyeditors.CustomDateEditor;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.InitBinder;

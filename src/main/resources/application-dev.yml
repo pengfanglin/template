@@ -10,7 +10,7 @@ mybatis:
   configuration:
     map-underscore-to-camel-case: true
     log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
-    default-enum-type-handler: com.fanglin.core.enums.CodeEnumTypeHandler
+    default-enum-type-handler: com.fanglin.common.core.enums.CodeEnumTypeHandler
 mapper:
   before: true
   safe-delete: true
@@ -37,31 +37,28 @@ spring:
       pool-name: hikariCP
       connection-timeout: 10000
 common:
-  jedis: true
-  #静态资源默认保存根路径
   static-dir: /data/static/template/
-  log:
+  jedis:
     enable: true
-    request:
-      level: info
-      enable: true
-    response:
-      level: info
-      enable: true
-jedis:
-  password: 123456
-gaode:
-  key: 4a4775afef857b08ca7e3ed2407a91ba
-push:
-  app-key: 309b096fa91403d46616e9ca
-  master-secret: 1888f0421cbcc93f63b330d3
-sms:
-  zhu-tong:
-    account: sfsfhy
-    password: jLkdrz
-wx:
-  app-id: wxd04cf729f344bdc3
-  secret: 65520fb3cf19ad99aea4747c7a77c9f8
+    password: 123456
+    host: 47.101.151.125
+  gaode:
+    key: 4a4775afef857b08ca7e3ed2407a91ba
+  push:
+    app-key: 309b096fa91403d46616e9ca
+    master-secret: 1888f0421cbcc93f63b330d3
+  sms:
+    zhu-tong:
+      account: sfsfhy
+      password: jLkdrz
+  wx:
+    app-id: wxd04cf729f344bdc3
+    secret: 65520fb3cf19ad99aea4747c7a77c9f8
+  swagger:
+    enable: true
+    title: 模板
+    description: 模板API文档
+    version: 1.0.0
 pay:
   wx:
     app-id: wx55c03ed3be05cf4b
