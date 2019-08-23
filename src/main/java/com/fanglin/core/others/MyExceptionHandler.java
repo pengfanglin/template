@@ -5,6 +5,7 @@ import com.fanglin.common.core.others.BusinessException;
 import com.fanglin.common.utils.JsonUtils;
 import com.fanglin.common.utils.OthersUtils;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.dao.DuplicateKeyException;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.BindException;
 import org.springframework.validation.FieldError;
@@ -122,5 +123,14 @@ public class MyExceptionHandler {
     @ResponseBody
     public Ajax handleException(MissingRequestHeaderException e) {
         return Ajax.error(String.format("请求头缺少参数,参数名[%s],类型[%s]", e.getHeaderName(), e.getParameter().getParameterType().getSimpleName()));
+    }
+
+    /**
+     * 唯一索引冲突
+     */
+    @ExceptionHandler
+    @ResponseBody
+    public Ajax handleException(DuplicateKeyException e) {
+        return Ajax.error("重复操作");
     }
 }
